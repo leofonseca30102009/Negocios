@@ -368,11 +368,102 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
 .cor-livre[style*="--cor"] { background: var(--cor); }
 .cor-livre input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
 .cores button[data-v] { width: 34px; height: 34px; }
+
+/* ===== visual igual ao do Painel da Vida ===== */
+body { overscroll-behavior-y: contain; }
+.wrap { padding-top: calc(env(safe-area-inset-top) + 14px); }
+.head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 16px; margin-bottom: 16px; }
+.head-l { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto; padding-left: 58px; }
+.head-t { min-width: 0; }
+.date { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; color: var(--fg-2); }
+.head h1 { margin: 2px 0 0; font-size: clamp(30px, 5vw, 38px); line-height: 1.08; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.menu-btn { appearance: none; position: fixed; z-index: 34; top: calc(env(safe-area-inset-top) + 12px); left: calc(env(safe-area-inset-left) + 14px); width: 44px; height: 44px; border-radius: 50%; color: var(--fg); cursor: pointer; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--panel) 72%, transparent); border: .5px solid rgba(255,255,255,.18); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 6px 20px rgba(0,0,0,.18), 0 1px 3px rgba(0,0,0,.12);
+  -webkit-backdrop-filter: blur(22px) saturate(1.8); backdrop-filter: blur(22px) saturate(1.8); transition: transform .25s cubic-bezier(.34,1.4,.64,1); }
+.menu-btn svg { width: 20px; height: 20px; }
+.menu-btn:active { transform: scale(.9); }
+.head .av-btn { width: 44px; height: 44px; align-self: center; box-shadow: 0 0 0 1px var(--sep); }
+.tabs { display: none; }
+@media (min-width: 48.01rem) {
+  .menu-btn { position: absolute; top: calc(env(safe-area-inset-top) + 18px); left: max(16px, calc((100vw - 64rem) / 2 + 16px)); }
+  .tabs { display: flex; width: 100%; gap: 4px; padding: 4px; border-radius: 16px; background: color-mix(in srgb, var(--panel) 80%, transparent); box-shadow: var(--shadow), inset 0 0 0 1px var(--sep); }
+  .tab { appearance: none; border: 0; background: none; flex: 1; min-height: 40px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--fg-2); font: inherit; font-weight: 600; cursor: pointer; position: relative; }
+  .tab svg { width: 18px; height: 18px; }
+  .tab[aria-current="page"] { background: var(--fg); color: var(--bg); }
+  .tab .badge { margin-left: 2px; }
+}
+.bnav { display: none; }
+@media (max-width: 48rem) {
+  .wrap { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+  .bnav:not([hidden]) { position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; display: flex; align-items: flex-end;
+    background: color-mix(in srgb, var(--panel) 86%, transparent); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+    border-top: .5px solid var(--sep); padding: 5px max(6px, env(safe-area-inset-right, 0px)) calc(5px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); }
+  .bnav button { appearance: none; border: 0; background: none; flex: 1 1 0; min-width: 0; min-height: 50px; display: grid; justify-items: center; align-content: center; gap: 3px; padding: 0; color: var(--fg-3); font-size: 10.5px; font-weight: 600; cursor: pointer; position: relative; -webkit-tap-highlight-color: transparent; transition: transform .25s cubic-bezier(.34,1.4,.64,1); }
+  .bnav button:active { transform: scale(.9); }
+  .bnav button > svg { width: 24px; height: 24px; }
+  .bnav button[aria-current="page"] { color: var(--accent); }
+  .bnav .badge { position: absolute; top: 2px; left: calc(50% + 6px); min-width: 18px; height: 18px; line-height: 18px; font-size: 11px; padding: 0 5px; }
+  .bnav button.casa { flex: 0 0 72px; align-content: start; }
+  .bnav button.casa i { width: 58px; height: 58px; margin-top: -26px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 38%, transparent), 0 0 0 5px var(--bg); }
+  .bnav button.casa i svg { width: 27px; height: 27px; }
+  .nav-sec { top: calc(env(safe-area-inset-top) + 8px); transition: padding-left .2s ease; }
+  .nav-sec.presa { padding-left: 70px; }
+}
+.lead { margin: 0; font-size: 17px; line-height: 1.45; color: var(--fg-2); }
+.lead b { color: var(--fg); background: linear-gradient(90deg, var(--accent), #5ac8fa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ola-box.com-banner .lead, .ola-box.com-banner .lead b { color: #fff; -webkit-text-fill-color: #fff; background: none; }
+.ph-n { display: block; font-size: 15px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+/* gaveta */
+.gaveta { position: fixed; inset: 0; z-index: 60; }
+.gv-fundo { position: absolute; inset: 0; background: rgba(0,0,0,.35); opacity: 0; transition: opacity .22s; }
+.gv-painel { position: absolute; top: 0; bottom: 0; left: 0; width: min(84vw, 320px); background: var(--panel); box-shadow: 8px 0 32px rgba(0,0,0,.25); display: flex; flex-direction: column; gap: 8px; padding: calc(env(safe-area-inset-top) + 22px) 14px calc(env(safe-area-inset-bottom) + 16px); transform: translateX(-102%); transition: transform .24s cubic-bezier(.2,.8,.2,1); overflow-y: auto; }
+.gaveta.aberta .gv-fundo { opacity: 1; } .gaveta.aberta .gv-painel { transform: none; }
+.gv-perfil { appearance: none; border: 0; background: var(--fill); border-radius: 16px; padding: 12px; display: flex; align-items: center; gap: 12px; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.gv-perfil .av { width: 46px; height: 46px; font-size: 18px; }
+.gv-lista { display: grid; gap: 2px; margin-top: 6px; }
+.gv-item { appearance: none; border: 0; background: none; border-radius: 12px; min-height: 46px; padding: 0 12px; display: flex; align-items: center; gap: 12px; font: inherit; font-weight: 600; color: var(--fg); cursor: pointer; text-align: left; }
+.gv-item svg { width: 20px; height: 20px; color: var(--fg-2); flex: none; }
+.gv-item .badge { margin-left: auto; }
+.gv-sep { height: .5px; background: var(--sep); margin: 6px 8px; }
+/* tarefas e conversas */
+.grp-h { appearance: none; border: 0; background: none; font: inherit; color: inherit; display: flex; align-items: center; gap: 10px; margin: 0 0 8px; padding: 0; cursor: pointer; }
+.grp-h b { font-size: 17px; } .grp-h .n { color: var(--fg-3); font-weight: 600; }
+.proj-ic.mini { width: 30px; height: 30px; border-radius: 9px; font-size: 14px; }
+.cv-it { appearance: none; border: 0; width: 100%; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
+.cv-tx { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.cv-l1 { display: flex; justify-content: space-between; gap: 8px; } .cv-l1 small { color: var(--fg-3); font-size: 12px; flex: none; }
+.cv-l2 { color: var(--fg-2); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cv-it.novo .cv-l2 { color: var(--fg); font-weight: 600; }
+/* puxar para atualizar */
+.ptr { position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) - 44px); z-index: 60; width: 40px; height: 40px; margin-left: -20px; border-radius: 50%; background: var(--panel); color: var(--accent); display: grid; place-items: center; box-shadow: 0 6px 18px rgba(0,0,0,.18), inset 0 0 0 1px var(--sep); opacity: 0; pointer-events: none; }
+.ptr svg { width: 20px; height: 20px; transition: transform .2s; } .ptr.pronto svg { transform: rotate(180deg); } .ptr.girando svg { animation: ptrGira .7s linear infinite; }
+@keyframes ptrGira { to { transform: rotate(360deg); } }
+/* vidro e pulinho, como no Painel */
+:root { --lg-top: rgba(255,255,255,.62); --lg-bot: rgba(255,255,255,.22); --lg-borda: rgba(255,255,255,.75); --lg-sombra: 0 8px 22px rgba(20,20,40,.10); --pop: cubic-bezier(.34,1.4,.64,1); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --lg-top: rgba(255,255,255,.13); --lg-bot: rgba(255,255,255,.04); --lg-borda: rgba(255,255,255,.16); --lg-sombra: 0 8px 22px rgba(0,0,0,.35); } }
+:root[data-theme="dark"] { --lg-top: rgba(255,255,255,.13); --lg-bot: rgba(255,255,255,.04); --lg-borda: rgba(255,255,255,.16); --lg-sombra: 0 8px 22px rgba(0,0,0,.35); }
+:is(.pv-item, .tf, .nt, .lk, .sb-it, .cv-it, .gv-item, .mini) { position: relative; isolation: isolate; transition: transform .32s var(--pop); -webkit-tap-highlight-color: transparent; }
+:is(.pv-item, .tf, .nt, .lk, .sb-it, .cv-it, .gv-item, .mini)::after { content: ""; position: absolute; inset: 1px 4px; border-radius: 14px; z-index: -1; pointer-events: none; background: linear-gradient(180deg, var(--lg-top), var(--lg-bot)); border: 1px solid var(--lg-borda); box-shadow: var(--lg-sombra), inset 0 1px 0 var(--lg-borda); -webkit-backdrop-filter: blur(14px) saturate(1.7); backdrop-filter: blur(14px) saturate(1.7); opacity: 0; transform: scale(.96); transition: opacity .2s ease, transform .32s var(--pop); }
+:is(.pv-item, .tf, .nt, .lk, .sb-it, .cv-it, .gv-item, .mini):active::after { opacity: 1; transform: scale(1); }
+:is(.pv-item, .tf, .nt, .lk, .sb-it, .cv-it, .gv-item):active { transform: scale(.985); }
+:is(.proj, .cp, .kpi, .sb-cartao, .card.graf) { transition: transform .34s var(--pop), box-shadow .2s ease; -webkit-tap-highlight-color: transparent; }
+:is(.proj, .cp.card, .sb-cartao):active { transform: scale(.97); box-shadow: var(--lg-sombra), inset 0 1px 0 var(--lg-borda), 0 0 0 1px var(--lg-borda); transition-duration: .12s; }
+:is(.btn, .ic-btn, .av-btn, .ck, .seg button, .chips button, .nav-sec button, .esc-op) { transition: transform .32s var(--pop), background-color .15s, opacity .15s; }
+:is(.btn:not(:disabled), .ic-btn, .av-btn, .ck, .seg button, .chips button, .nav-sec button):active { transform: scale(.9); transition-duration: .1s; }
+@media (hover: hover) and (pointer: fine) {
+  :is(.pv-item, .tf, .nt, .lk, .sb-it, .cv-it, .gv-item):hover { transform: translateY(-2px); background: none; }
+  :is(.pv-item, .tf, .nt, .lk, .sb-it, .cv-it, .gv-item):hover::after { opacity: 1; transform: scale(1); }
+  :is(.proj, .cp.card, .sb-cartao, .kpi):hover { transform: translateY(-3px); box-shadow: var(--lg-sombra), inset 0 1px 0 var(--lg-borda), 0 0 0 1px var(--lg-borda); }
+  .btn:not(:disabled):hover, .ic-btn:hover, .av-btn:hover { transform: translateY(-1px) scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition-duration: .01ms !important; animation: none !important; } }
 </style>
 </head>
 <body>
-<header class="top" id="top"><div class="top-in" id="top-in"></div></header>
+<button class="menu-btn" type="button" id="menu-btn" aria-label="Menu" hidden></button>
 <main class="wrap" id="app"><p class="load">Carregando…</p></main>
+<nav class="bnav" id="bnav" aria-label="Seções" hidden></nav>
+<div id="gaveta-root"></div>
 <div id="sheet-root"></div>
 
 <script src="config.js"></script>
@@ -387,6 +478,17 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined && txt !== null) e.textContent = txt; return e; };
   const svg = (d, w = 1.9) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const IC2 = {
+    menu: svg('M4 7h16M4 12h16M4 17h16', 2),
+    casa: svg('M3.5 10.5 12 3.5l8.5 7V19a1.5 1.5 0 0 1-1.5 1.5h-4.5V14h-5v6.5H5A1.5 1.5 0 0 1 3.5 19z', 2),
+    tarefas: svg('M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2', 2),
+    conversa: svg('M4 5.5h16v11H9l-4.5 3.5v-3.5H4z', 2),
+    livro: svg('M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5zM12 6v13.5', 2),
+    perfil: svg('M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5a7.5 7.5 0 0 1 15 0', 2),
+    sair: svg('M10 5H5v14h5M14 8l4 4-4 4M18 12H9', 2),
+    painel: svg('M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z', 1.9),
+    codigo: svg('M7 10V7a5 5 0 0 1 10 0v3M5 10h14v10H5z', 1.9)
+  };
   const IC = {
     marca: '<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M9 21.5V14M14.3 21.5V10.5M19.6 21.5V16M24 21.5H8" stroke="var(--on-accent)" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg>',
     voltar: svg('M15 5l-7 7 7 7', 2.2), mais: svg('M12 5v14M5 12h14', 2.2), esq: svg('M15 6l-6 6 6 6', 2.2), dir: svg('M9 6l6 6-6 6', 2.2),
@@ -527,17 +629,67 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   const SECOES = [['visao', 'Visão geral'], ['tarefas', 'Tarefas'], ['campanhas', 'Campanhas'], ['metricas', 'Métricas'], ['metas', 'Metas'], ['caderno', 'Caderno'], ['links', 'Links'], ['conversa', 'Conversa']];
   const rota = () => { const m = /^#\/p\/([^/]+)(?:\/(\w+))?/.exec(location.hash); return m ? { pid: m[1], sec: SECOES.some((x) => x[0] === m[2]) ? m[2] : 'visao' } : { pid: null, sec: null }; };
   const naSaber = () => /^#\/saber/.test(location.hash);
+  const vista = () => (/^#\/saber/.test(location.hash) ? 'saber' : /^#\/tarefas/.test(location.hash) ? 'tarefas' : /^#\/conversas/.test(location.hash) ? 'conversas' : rota().pid ? 'projeto' : 'inicio');
   const ir = (h) => { if (location.hash !== h) location.hash = h; else render(); };
   window.addEventListener('hashchange', () => { render(); window.scrollTo(0, 0); });
 
   /* ---------- topo ---------- */
+  const DIAS_C = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  const minhasAbertas = (todas) => { const l = []; S.projetos.forEach((p) => docsDe(p.id).tarefas.forEach((t) => { if (t.status !== 'feito' && (todas || t.resp === S.uid || t.resp === 'todos')) l.push({ p, t }); })); return l.sort((a, b) => (a.t.prazo || '9999').localeCompare(b.t.prazo || '9999')); };
+  const totalNaoLidas = () => S.projetos.reduce((n, p) => n + naoLidas(p.id), 0);
+  // casca no estilo do Painel: botão de vidro flutuante, título grande e barra de baixo com o Início no meio
   function renderTopo() {
-    const r = rota(); const t = $('#top-in'); const p = r.pid ? proj(r.pid) : null;
-    const esq = el('div', 'top-t');
-    if (p || naSaber()) { const v = el('button', 'voltar'); v.type = 'button'; v.innerHTML = IC.voltar + `<span>${p ? 'Projetos' : 'Início'}</span>`; v.addEventListener('click', () => ir('#/')); esq.appendChild(v); }
-    else { const m = el('div', 'marca'); m.innerHTML = IC.marca; m.appendChild(el('span', '', 'Negócios')); esq.appendChild(m); }
-    const av = el('button', 'av-btn'); av.appendChild(fotoUser(S.uid, S.nome || S.email, 'av-in')); av.type = 'button'; av.setAttribute('aria-label', 'Sua conta'); av.addEventListener('click', openConta);
-    t.replaceChildren(esq, av);
+    const v = vista(); const mb = $('#menu-btn'); mb.hidden = false;
+    if (v === 'projeto') { mb.innerHTML = IC.voltar; mb.setAttribute('aria-label', 'Voltar para o início'); mb.onclick = () => ir('#/'); }
+    else { mb.innerHTML = IC2.menu; mb.setAttribute('aria-label', 'Menu'); mb.onclick = abreGaveta; }
+    const nav = $('#bnav'); nav.hidden = false;
+    const nT = minhasAbertas().length, nS = novosSaber(), nC = totalNaoLidas();
+    const bt = (k, nome, ic, n, fn) => { const b = el('button'); b.type = 'button'; b.innerHTML = ic; b.appendChild(el('span', '', nome)); if (v === k) b.setAttribute('aria-current', 'page'); if (n) { const bd = el('span', 'badge', String(n)); bd.setAttribute('aria-label', String(n)); b.appendChild(bd); } b.addEventListener('click', fn); return b; };
+    const casa = el('button', 'casa'); casa.type = 'button'; casa.setAttribute('aria-label', 'Início'); if (v === 'inicio') casa.setAttribute('aria-current', 'page'); const ci = el('i'); ci.innerHTML = IC2.casa; casa.appendChild(ci); casa.addEventListener('click', () => ir('#/'));
+    nav.replaceChildren(bt('tarefas', 'Tarefas', IC2.tarefas, nT, () => ir('#/tarefas')), bt('saber', 'Conhecimento', IC2.livro, nS, () => ir('#/saber')), casa, bt('conversas', 'Conversas', IC2.conversa, nC, () => ir('#/conversas')), bt('perfil', 'Perfil', IC2.perfil, 0, openPerfil));
+  }
+  function montaHead() {
+    const v = vista(); const p = v === 'projeto' ? proj(rota().pid) : null; const d = new Date();
+    const titulo = { inicio: 'Início', tarefas: 'Suas tarefas', conversas: 'Conversas', saber: 'Conhecimento', projeto: p ? p.nome : 'Projeto' }[v];
+    const h = el('header', 'head'); const l = el('div', 'head-l'); const t = el('div', 'head-t');
+    t.append(el('p', 'date', `${DIAS_C[d.getDay()]}, ${pad(d.getDate())}/${pad(d.getMonth() + 1)}`), el('h1', '', titulo)); l.appendChild(t);
+    const av = el('button', 'av-btn'); av.type = 'button'; av.setAttribute('aria-label', 'Seu perfil'); av.appendChild(fotoUser(S.uid, S.nome || S.email, 'av-in')); av.addEventListener('click', openPerfil);
+    h.append(l, av);
+    const tabs = el('nav', 'tabs'); tabs.setAttribute('aria-label', 'Seções');
+    [['inicio', 'Início', '#/', IC2.casa, 0], ['tarefas', 'Tarefas', '#/tarefas', IC2.tarefas, minhasAbertas().length], ['conversas', 'Conversas', '#/conversas', IC2.conversa, totalNaoLidas()], ['saber', 'Conhecimento', '#/saber', IC2.livro, novosSaber()]].forEach(([k, n, hr, ic, c]) => { const b = el('button', 'tab'); b.type = 'button'; b.innerHTML = ic; b.appendChild(el('span', '', n)); if (v === k) b.setAttribute('aria-current', 'page'); if (c) b.appendChild(el('span', 'badge', String(c))); b.addEventListener('click', () => ir(hr)); tabs.appendChild(b); });
+    h.appendChild(tabs); return h;
+  }
+  function abreGaveta() {
+    const raiz = $('#gaveta-root'); const g = el('div', 'gaveta'); const fundo = el('div', 'gv-fundo'); const pn = el('div', 'gv-painel'); pn.setAttribute('role', 'dialog'); pn.setAttribute('aria-label', 'Menu');
+    const fecha = () => { g.classList.remove('aberta'); setTimeout(() => g.remove(), 240); document.removeEventListener('keydown', esc); };
+    const esc = (e) => { if (e.key === 'Escape') fecha(); }; document.addEventListener('keydown', esc); fundo.addEventListener('click', fecha);
+    const topo = el('button', 'gv-perfil'); topo.type = 'button'; const tt = el('span', 'pf-t'); tt.append(el('b', '', S.nome || 'Seu perfil'), el('span', '', S.email)); topo.append(fotoUser(S.uid, S.nome || S.email), tt); topo.addEventListener('click', () => { fecha(); setTimeout(openPerfil, 200); });
+    const item = (ic, txt, fn, n) => { const b = el('button', 'gv-item'); b.type = 'button'; b.innerHTML = ic; b.appendChild(el('span', '', txt)); if (n) b.appendChild(el('span', 'badge', String(n))); b.addEventListener('click', () => { fecha(); setTimeout(fn, 180); }); return b; };
+    const lista = el('div', 'gv-lista');
+    lista.append(item(IC2.casa, 'Início', () => ir('#/')), item(IC2.tarefas, 'Suas tarefas', () => ir('#/tarefas'), minhasAbertas().length), item(IC2.conversa, 'Conversas', () => ir('#/conversas'), totalNaoLidas()), item(IC2.livro, 'Conhecimento', () => ir('#/saber'), novosSaber()),
+      el('div', 'gv-sep'), item(IC.mais, 'Novo projeto', () => openProjeto(null)), item(IC2.codigo, 'Entrar com código', openEntrar), item(IC2.perfil, 'Perfil e aparência', openConta), item(IC2.painel, 'Abrir o Painel da Vida', () => { location.href = 'https://leofonseca30102009.github.io/Painel-da-Vida/'; }),
+      el('div', 'gv-sep'), item(IC2.sair, 'Sair da conta', async () => { await S.sb.auth.signOut(); location.reload(); }));
+    pn.append(topo, lista); g.append(fundo, pn); raiz.replaceChildren(g); requestAnimationFrame(() => g.classList.add('aberta'));
+  }
+  function renderMinhas() {
+    const app = $('#app'); const todas = S.verTodas === true; const l = minhasAbertas(todas);
+    const sg = segField('', 'mt-filtro', [['minhas', 'Comigo'], ['todas', 'Todas abertas']], todas ? 'todas' : 'minhas'); sg.querySelector('.seg').addEventListener('change', (e) => { S.verTodas = e.target.dataset.value === 'todas'; render(); });
+    const kids = [el('p', 'lead', todas ? `${l.length} ${l.length === 1 ? 'tarefa aberta' : 'tarefas abertas'} em todos os projetos.` : l.length ? `Você tem ${l.length} ${l.length === 1 ? 'tarefa' : 'tarefas'} para fazer.` : 'Nada com você agora.'), sg];
+    if (!l.length) { const v = el('div', 'card vazio'); v.append(el('b', '', 'Tudo em dia'), document.createTextNode('As tarefas que alguém marcar para você, ou para todos, aparecem aqui, de todos os projetos.')); kids.push(v); }
+    const porP = new Map(); l.forEach(({ p, t }) => { if (!porP.has(p.id)) porP.set(p.id, { p, ts: [] }); porP.get(p.id).ts.push(t); });
+    porP.forEach(({ p, ts }) => { const s = el('section', 'sec'); const sh = el('button', 'grp-h'); sh.type = 'button'; sh.append(fotoEl(p.foto, p.nome, p.cor, 'proj-ic mini'), el('b', '', p.nome), el('span', 'n', String(ts.length))); sh.addEventListener('click', () => ir(`#/p/${p.id}/tarefas`)); const ls = el('div', 'lista'); ts.forEach((t) => ls.appendChild(linhaTarefa(p, t))); s.append(sh, ls); kids.push(s); });
+    app.replaceChildren(...kids);
+  }
+  function renderConversas() {
+    const app = $('#app');
+    const l = S.projetos.map((p) => { const ms = docsDe(p.id).mural.slice().sort((a, b) => String(b.criado_em).localeCompare(String(a.criado_em))); return { p, u: ms[0], n: naoLidas(p.id) }; }).sort((a, b) => String((b.u || {}).criado_em || '').localeCompare(String((a.u || {}).criado_em || '')));
+    if (!l.length) { const v = el('div', 'card vazio'); v.append(el('b', '', 'Nenhuma conversa'), document.createTextNode('Cada projeto tem a sua conversa. Crie um projeto e convide o seu sócio.')); app.replaceChildren(v); return; }
+    const ls = el('div', 'lista');
+    l.forEach(({ p, u, n }) => { const b = el('button', 'cv-it' + (n ? ' novo' : '')); b.type = 'button'; b.addEventListener('click', () => ir(`#/p/${p.id}/conversa`));
+      const tx = el('span', 'cv-tx'); const t1 = el('span', 'cv-l1'); t1.append(el('b', '', p.nome), el('small', '', u ? (diaDe(u.criado_em) === HOJE() ? hora(u.criado_em) : dm(diaDe(u.criado_em))) : '')); tx.appendChild(t1);
+      tx.appendChild(el('span', 'cv-l2', u ? `${u.autor === S.uid ? 'Você' : nomeDe(p.id, u.autor)}: ${u.texto || ''}` : 'Nenhuma mensagem ainda'));
+      b.append(fotoEl(p.foto, p.nome, p.cor, 'proj-ic'), tx); if (n) b.appendChild(el('span', 'badge', String(n))); ls.appendChild(b); });
+    app.replaceChildren(el('p', 'lead', 'As conversas de cada projeto, num lugar só.'), ls);
   }
   function openConta() {
     const info = el('button', 'mb pf-linha'); info.type = 'button'; const ti = el('span', 'pf-t'); ti.append(el('b', '', S.nome || 'Seu perfil'), el('span', '', S.email)); info.append(fotoUser(S.uid, S.nome || S.email), ti, el('span', 'pill acc', 'Personalizar')); info.addEventListener('click', () => { fecharSheet(); setTimeout(openPerfil, 220); });
@@ -553,10 +705,11 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     renderTopo(); const app = $('#app');
     if (!S.carregado) { app.replaceChildren(el('p', 'load', 'Carregando…')); return; }
     if (S.erro) { const v = el('div', 'card vazio'); v.append(el('b', '', 'Não consegui carregar'), document.createTextNode('Confira a internet e tente de novo.')); const b = el('button', 'btn', 'Tentar de novo'); b.type = 'button'; b.addEventListener('click', carregar); v.appendChild(b); app.replaceChildren(v); return; }
-    const r = rota();
-    if (naSaber()) { renderSaber(); return; }
-    if (r.pid) { const p = proj(r.pid); if (!p) { ir('#/'); return; } renderProjeto(p, r.sec); }
+    const r = rota(); const v = vista();
+    if (v === 'saber') renderSaber(); else if (v === 'tarefas') renderMinhas(); else if (v === 'conversas') renderConversas();
+    else if (r.pid) { const p = proj(r.pid); if (!p) { ir('#/'); return; } renderProjeto(p, r.sec); }
     else renderInicio();
+    $('#app').prepend(montaHead());
   }
 
   /* ---------- personalização: foto, banner e cor (modelos prontos ou imagem enviada) ---------- */
@@ -687,7 +840,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   let sbTema = 'Todos', sbFiltro = 'todos';
   function renderSaber() {
     const app = $('#app');
-    const h = el('div', 'sec-h'); const ht = el('div'); ht.append(el('h1', '', 'Conhecimento'), el('p', 'sub', 'O que vocês aprendem, num lugar só. Vocês dois veem tudo.'));
+    const h = el('div', 'sec-h'); const ht = el('div'); ht.append(el('p', 'lead', 'O que vocês aprendem, num lugar só. Vocês dois veem tudo.'));
     const ac = el('div', 'acoes');
     const nl = el('button', 'btn soft sm'); nl.type = 'button'; nl.innerHTML = IC.link + '<span>Salvar link</span>'; nl.addEventListener('click', () => openSaber(null, 'link'));
     const nn = el('button', 'btn sm'); nn.type = 'button'; nn.innerHTML = IC.mais + '<span>Anotação</span>'; nn.addEventListener('click', () => openSaber(null, 'nota'));
@@ -778,16 +931,15 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   function renderInicio() {
     const app = $('#app'); const h = new Date().getHours();
     const top = el('div', 'ola-box'); const bpf = imgCss(perfilDe(S.uid).banner); if (bpf) { top.classList.add('com-banner'); top.style.setProperty('--bn', bpf); }
-    top.append(el('h1', '', (h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite') + (S.nome ? ', ' + S.nome.split(' ')[0] : '')));
-    const nP = S.projetos.length; top.appendChild(el('p', 'sub ola', nP ? `${nP} ${nP === 1 ? 'projeto' : 'projetos'} em andamento` : 'Comece criando seu primeiro projeto.'));
+    const nP = S.projetos.length; const ld = el('p', 'lead'); ld.append(el('b', '', (h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite') + (S.nome ? ', ' + S.nome.split(' ')[0] : '') + '.'), document.createTextNode(' ' + (nP ? `${nP} ${nP === 1 ? 'projeto' : 'projetos'} em andamento${minhasAbertas().length ? ` e ${minhasAbertas().length} ${minhasAbertas().length === 1 ? 'tarefa' : 'tarefas'} com você` : ''}.` : 'Comece criando seu primeiro projeto.'))); top.appendChild(ld);
     const kids = [top, cartaoSaber()];
     // para você
     const minhas = []; S.projetos.forEach((p) => docsDe(p.id).tarefas.forEach((t) => { if (t.status !== 'feito' && (t.resp === S.uid || t.resp === 'todos')) minhas.push({ p, t }); }));
     minhas.sort((a, b) => (a.t.prazo || '9999').localeCompare(b.t.prazo || '9999'));
     if (minhas.length) {
-      const s = el('section', 'sec'); const sh = el('div', 'sec-h'); sh.appendChild(el('h2', '', 'Com você')); s.appendChild(sh);
+      const s = el('section', 'sec'); const sh = el('div', 'sec-h'); sh.appendChild(el('h2', '', 'Com você')); if (minhas.length > 4) { const vt = el('button', 'link', 'Ver todas'); vt.type = 'button'; vt.addEventListener('click', () => ir('#/tarefas')); sh.appendChild(vt); } s.appendChild(sh);
       const l = el('div', 'lista');
-      minhas.slice(0, 6).forEach(({ p, t }) => {
+      minhas.slice(0, 4).forEach(({ p, t }) => {
         const it = el('div', 'pv-item'); it.tabIndex = 0; it.setAttribute('role', 'button');
         const tx = el('div', 'pv-tx'); tx.appendChild(el('b', '', t.titulo)); const m = el('span'); const pt = el('i', 'pt'); pt.style.setProperty('--cor', corVar(p.cor)); m.append(pt, document.createTextNode(p.nome));
         if (t.prazo) { const n = diasEntre(HOJE(), t.prazo); m.appendChild(el('span', n < 0 ? 'atr' : '', '· ' + (n < 0 ? `atrasada (${dm(t.prazo)})` : n === 0 ? 'hoje' : n === 1 ? 'amanhã' : `até ${dm(t.prazo)}`))); }
@@ -825,12 +977,6 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   }
   const faseCls = (f) => (f === 'Lançado' ? 'ok' : f === 'Desenvolvimento' ? 'info' : f === 'Pausado' ? '' : 'warn');
 
-  function corSel(val) {
-    const r = el('div', 'row'); const l = el('span', 'lbl', 'Cor'); l.id = 'pj-cor-l'; r.appendChild(l);
-    const w = el('div', 'cores'); w.id = 'pj-cor'; w.dataset.value = val; w.setAttribute('role', 'group'); w.setAttribute('aria-labelledby', 'pj-cor-l');
-    CORES.forEach((c) => { const b = el('button'); b.type = 'button'; b.style.setProperty('--cor', corVar(c)); b.setAttribute('aria-label', c); b.setAttribute('aria-pressed', String(c === val)); b.addEventListener('click', () => { w.dataset.value = c; $$('button', w).forEach((x) => x.setAttribute('aria-pressed', String(x === b))); }); w.appendChild(b); });
-    r.appendChild(w); return r;
-  }
   function openProjeto(p) {
     const novo = !p; p = p || { nome: '', cor: CORES[S.projetos.length % CORES.length], fase: 'Ideia', descricao: '' };
     const nome = field('Nome do projeto', 'pj-nome', { maxlength: '60', value: p.nome, placeholder: 'Ex.: Cardápio digital' });
@@ -870,7 +1016,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   function renderProjeto(p, sec) {
     const app = $('#app'); const ms = membrosDe(p.id);
     const ph = el('div', 'ph'); ph.style.setProperty('--cor', corVar(p.cor)); const pbn = imgCss(p.banner); if (pbn) { ph.classList.add('com-bn'); ph.style.setProperty('--bn', pbn); } ph.appendChild(fotoEl(p.foto, p.nome, p.cor, 'proj-ic'));
-    const t = el('div', 'ph-t'); t.appendChild(el('h1', '', p.nome)); const m = el('div', 'ph-m'); m.appendChild(el('span', 'pill ' + faseCls(p.fase), p.fase)); m.appendChild(el('span', '', ms.map((x) => (x.user_id === S.uid ? 'você' : x.nome)).join(', '))); t.appendChild(m); ph.appendChild(t);
+    const t = el('div', 'ph-t'); if (p.descricao) t.appendChild(el('b', 'ph-n', p.descricao.split('\n')[0].slice(0, 90))); const m = el('div', 'ph-m'); m.appendChild(el('span', 'pill ' + faseCls(p.fase), p.fase)); m.appendChild(el('span', '', ms.map((x) => (x.user_id === S.uid ? 'você' : x.nome)).join(', '))); t.appendChild(m); ph.appendChild(t);
     const bts = el('div', 'acoes');
     const conv = el('button', 'ic-btn'); conv.type = 'button'; conv.innerHTML = IC.pessoas; conv.setAttribute('aria-label', 'Pessoas e convite'); conv.addEventListener('click', () => openPessoas(p));
     const ed = el('button', 'ic-btn'); ed.type = 'button'; ed.innerHTML = IC.edit; ed.setAttribute('aria-label', 'Editar projeto'); ed.addEventListener('click', () => openProjeto(p));
@@ -913,7 +1059,6 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   /* ---------- visão geral ---------- */
   function secVisao(p) {
     const w = el('div'); const d = docsDe(p.id);
-    if (p.descricao) w.appendChild(el('p', 'sub', p.descricao));
     const fs = segField('', 'vg-fase', FASES.map((f) => [f, f]), p.fase); fs.classList.add('fase-seg'); fs.querySelector('.seg').setAttribute('aria-label', 'Fase do projeto');
     fs.querySelector('.seg').addEventListener('change', async (e) => { const f = e.target.dataset.value; p.fase = f; render(); const { error } = await S.sb.from('neg_projetos').update({ fase: f }).eq('id', p.id); if (error) toast('Não salvou a fase'); });
     w.appendChild(fs);
@@ -1222,7 +1367,8 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   /* ---------- conversa ---------- */
   function chatAltura() {
     const l = $('#chat-l'); const f = $('.chat-f'); if (!l || !f) return; const vv = window.visualViewport; const alt = vv ? vv.height : innerHeight;
-    l.style.height = Math.max(200, Math.round(alt - l.getBoundingClientRect().top - f.offsetHeight - 16)) + 'px';
+    const bn = $('#bnav'); const bh = bn && !bn.hidden && getComputedStyle(bn).display !== 'none' ? bn.offsetHeight : 0;
+    l.style.height = Math.max(200, Math.round(alt - l.getBoundingClientRect().top - f.offsetHeight - 16 - bh)) + 'px';
   }
   ['resize', 'orientationchange'].forEach((e) => window.addEventListener(e, () => requestAnimationFrame(chatAltura)));
   if (window.visualViewport) window.visualViewport.addEventListener('resize', () => requestAnimationFrame(() => { chatAltura(); const l = $('#chat-l'); if (l && document.activeElement && document.activeElement.id === 'chat-txt') l.scrollTop = l.scrollHeight; }));
@@ -1252,7 +1398,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
 
   /* ---------- entrada ---------- */
   function telaEntrar(msg) {
-    $('#top').hidden = true;
+    $('#menu-btn').hidden = true; $('#bnav').hidden = true;
     const w = el('form', 'entrar'); const m = el('div', 'marca'); m.innerHTML = IC.marca; m.appendChild(el('span', '', 'Negócios'));
     w.append(m, el('p', 'sub', 'Use a mesma conta do Painel da Vida.'));
     const e = field('E-mail', 'in-email', { type: 'email', autocomplete: 'email', inputmode: 'email', required: 'required' });
@@ -1276,6 +1422,20 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     render(); await carregar(); ouvir();
     S.sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_OUT') location.reload(); });
   }
+  (() => {
+    const ind = document.createElement('div'); ind.className = 'ptr'; ind.setAttribute('aria-hidden', 'true');
+    ind.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 5v13M6.5 12.5L12 18l5.5-5.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    document.body.appendChild(ind); const LIM = 70; let y0 = null, x0 = 0, dy = 0, ativo = false;
+    const pode = (t) => window.scrollY <= 0 && !document.documentElement.classList.contains('trava') && !(t.closest && t.closest('.sheet, .scrim, .gaveta, .chat-l, .nav-sec, .bnav, .chips, input, textarea, select'));
+    const solta = () => { ind.style.transition = 'transform .25s ease, opacity .2s ease'; ind.style.transform = 'translateY(0)'; ind.style.opacity = '0'; ind.classList.remove('pronto', 'girando'); setTimeout(() => { ind.style.transition = ''; }, 260); };
+    addEventListener('touchstart', (e) => { if (e.touches.length !== 1 || !S.uid || !pode(e.target)) { y0 = null; return; } y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; dy = 0; ativo = false; }, { passive: true });
+    addEventListener('touchmove', (e) => { if (y0 === null) return; const d = e.touches[0].clientY - y0; const dx = Math.abs(e.touches[0].clientX - x0);
+      if (!ativo) { if (d > 10 && d > dx * 1.5 && window.scrollY <= 0) ativo = true; else if (d < -4 || dx > 14) { y0 = null; return; } else return; }
+      dy = Math.min(130, d * 0.5); ind.style.transform = `translateY(${dy + 44}px)`; ind.style.opacity = String(Math.min(1, dy / LIM)); ind.classList.toggle('pronto', dy >= LIM); if (e.cancelable) e.preventDefault(); }, { passive: false });
+    addEventListener('touchend', async () => { if (y0 === null) return; y0 = null; const ok = ativo && dy >= LIM; ativo = false; if (!ok) { solta(); return; }
+      ind.classList.remove('pronto'); ind.classList.add('girando'); ind.style.transition = 'transform .2s ease'; ind.style.transform = 'translateY(96px)'; await carregar(); toast('Atualizado'); solta(); });
+  })();
+  addEventListener('scroll', () => { const n = document.querySelector('.nav-sec'); if (!n) return; n.classList.toggle('presa', n.getBoundingClientRect().top <= 20 && window.scrollY > 40); }, { passive: true });
   if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { /* sem service worker */ }));
   iniciar();
 })();
