@@ -457,6 +457,10 @@ body { overscroll-behavior-y: contain; }
   .btn:not(:disabled):hover, .ic-btn:hover, .av-btn:hover { transform: translateY(-1px) scale(1.04); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition-duration: .01ms !important; animation: none !important; } }
+
+.fase-l { margin: 0 0 6px; }
+.abas-pj { flex-wrap: wrap; margin-top: 6px; }
+.abas-pj button[aria-pressed="false"] { text-decoration: line-through; opacity: .6; }
 </style>
 </head>
 <body>
@@ -626,6 +630,9 @@ body { overscroll-behavior-y: contain; }
   const marcaVisto = (pid) => { const l = docsDe(pid).mural; const u = l.length ? l.map((x) => x.criado_em).sort().pop() : new Date().toISOString(); try { localStorage.setItem(vistoK(pid), u); } catch (e) { /* sem armazenamento */ } };
 
   /* ---------- rotas ---------- */
+  const OPCIONAIS = ['tarefas', 'campanhas', 'metricas', 'metas', 'caderno', 'links', 'conversa'];
+  const ocultasDe = (pid) => { const c = docsDe(pid).config.find((x) => x.id === 'secoes'); return c && Array.isArray(c.ocultas) ? c.ocultas.filter((k) => OPCIONAIS.includes(k)) : []; };
+  const secoesDe = (pid) => { const o = ocultasDe(pid); return SECOES.filter(([k]) => !o.includes(k)); };
   const SECOES = [['visao', 'Visão geral'], ['tarefas', 'Tarefas'], ['campanhas', 'Campanhas'], ['metricas', 'Métricas'], ['metas', 'Metas'], ['caderno', 'Caderno'], ['links', 'Links'], ['conversa', 'Conversa']];
   const rota = () => { const m = /^#\/p\/([^/]+)(?:\/(\w+))?/.exec(location.hash); return m ? { pid: m[1], sec: SECOES.some((x) => x[0] === m[2]) ? m[2] : 'visao' } : { pid: null, sec: null }; };
   const naSaber = () => /^#\/saber/.test(location.hash);
@@ -810,7 +817,8 @@ body { overscroll-behavior-y: contain; }
   }
 
   /* ---------- conhecimento (compartilhado com quem trabalha com você) ---------- */
-  const TEMAS = ['Tráfego pago', 'Copy', 'Vendas', 'Conteúdo', 'Ferramentas', 'Mentalidade', 'Outro'];
+  const TEMAS = ['Métodos', 'Ideias', 'Apps', 'Tráfego pago', 'Copy', 'Vendas', 'Conteúdo', 'Ferramentas', 'Mentalidade', 'Outro'];
+  const IC_APP = svg('M5 4h5v5H5zM14 4h5v5h-5zM5 15h5v5H5zM14 15h5v5h-5z');
   const IC_NOTA = svg('M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 20V4a.5.5 0 0 1 .5-.5zM14 3.5V8h4M9 12h6M9 15.5h6');
   const IC_VIDEO = svg('M4 6.5h16v11H4zM10.5 9.5v5l4-2.5z');
   const IC_LIVRO = svg('M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5zM12 6v13.5');
@@ -842,9 +850,10 @@ body { overscroll-behavior-y: contain; }
     const app = $('#app');
     const h = el('div', 'sec-h'); const ht = el('div'); ht.append(el('p', 'lead', 'O que vocês aprendem, num lugar só. Vocês dois veem tudo.'));
     const ac = el('div', 'acoes');
-    const nl = el('button', 'btn soft sm'); nl.type = 'button'; nl.innerHTML = IC.link + '<span>Salvar link</span>'; nl.addEventListener('click', () => openSaber(null, 'link'));
+    const nl = el('button', 'btn soft sm'); nl.type = 'button'; nl.innerHTML = IC.link + '<span>Link</span>'; nl.addEventListener('click', () => openSaber(null, 'link'));
+    const na = el('button', 'btn soft sm'); na.type = 'button'; na.innerHTML = IC_APP + '<span>App</span>'; na.addEventListener('click', () => openSaber(null, 'app'));
     const nn = el('button', 'btn sm'); nn.type = 'button'; nn.innerHTML = IC.mais + '<span>Anotação</span>'; nn.addEventListener('click', () => openSaber(null, 'nota'));
-    ac.append(nl, nn); h.append(ht, ac);
+    ac.append(na, nl, nn); h.append(ht, ac);
     const bs = el('div', 'busca'); const q = el('input', 'field'); q.id = 'sb-q'; q.type = 'search'; q.placeholder = 'Buscar'; q.setAttribute('aria-label', 'Buscar no conhecimento'); q.addEventListener('input', () => pintaLista()); bs.appendChild(q);
     const temas = Array.from(new Set([...TEMAS, ...S.saber.map((x) => x.tema)])).filter((t) => S.saber.some((x) => x.tema === t));
     const ch = el('div', 'chips'); ch.setAttribute('role', 'group'); ch.setAttribute('aria-label', 'Filtrar por tema');
@@ -860,7 +869,7 @@ body { overscroll-behavior-y: contain; }
     if (!l.length) { lista.replaceChildren(el('p', 'vazio', sbFiltro === 'novos' ? 'Você já viu tudo.' : 'Nada encontrado.')); return; }
     lista.replaceChildren(...l.map((it) => {
       const b = el('button', 'sb-it' + (euVi(it) ? '' : ' novo')); b.type = 'button'; b.addEventListener('click', () => verSaber(it.id));
-      const ic = el('span', 'sb-ic2'); ic.innerHTML = it.tipo === 'link' ? (ehVideo(it.url) ? IC_VIDEO : IC.link) : IC_NOTA;
+      const ic = el('span', 'sb-ic2'); ic.innerHTML = it.tipo === 'app' ? IC_APP : it.tipo === 'link' ? (ehVideo(it.url) ? IC_VIDEO : IC.link) : IC_NOTA;
       const tx = el('span', 'sb-tx2'); tx.appendChild(el('b', '', it.titulo));
       if (it.texto) tx.appendChild(el('p', '', it.texto));
       const m = el('small'); m.append(el('span', 'pill', it.tema));
@@ -870,20 +879,24 @@ body { overscroll-behavior-y: contain; }
     }));
   }
   function openSaber(it, tipo) {
-    const novo = !it; it = it || { tipo, titulo: '', texto: '', url: '', tema: sbTema !== 'Todos' ? sbTema : 'Tráfego pago' };
-    const tp = segField('Tipo', 'sb-tipo', [['nota', 'Anotação'], ['link', 'Link (vídeo, curso, artigo)']], it.tipo);
+    const novo = !it; it = it || { tipo, titulo: '', texto: '', url: '', tema: tipo === 'app' ? 'Apps' : sbTema !== 'Todos' ? sbTema : tipo === 'nota' ? 'Métodos' : 'Tráfego pago' };
+    const tp = segField('Tipo', 'sb-tipo', [['nota', 'Anotação'], ['link', 'Link'], ['app', 'App']], it.tipo);
     const url = field('Link', 'sb-url', { type: 'url', inputmode: 'url', maxlength: '600', value: it.url || '', placeholder: 'https://youtube.com/…' });
     const tit = field('Título', 'sb-tit', { maxlength: '160', value: it.titulo, placeholder: 'Ex.: Como aquecer uma conta nova no Meta Ads' });
     const temas = Array.from(new Set([...TEMAS, ...S.saber.map((x) => x.tema)]));
     const tm = el('div', 'row'); const tl = el('label', '', 'Tema'); tl.htmlFor = 'sb-tema'; const ts = el('select', 'field'); ts.id = 'sb-tema'; temas.forEach((t) => ts.appendChild(new Option(t, t))); ts.value = temas.includes(it.tema) ? it.tema : 'Outro'; tm.append(tl, ts);
     const tx = field('Anotação', 'sb-tx', { tag: 'textarea', rows: '8', maxlength: '20000', value: it.texto || '', placeholder: 'O que você aprendeu, em tópicos. Ex.: 1) aquecer 3 a 5 dias com orçamento baixo; 2) …' });
     tx.querySelector('textarea').classList.add('editor');
-    const mostra = () => { const v = $('#sb-tipo').dataset.value; url.hidden = v !== 'link'; tx.querySelector('label').textContent = v === 'link' ? 'Por que vale a pena (opcional)' : 'Anotação'; };
+    const mostra = () => { const v = $('#sb-tipo').dataset.value; url.hidden = v === 'nota'; url.querySelector('label').textContent = v === 'app' ? 'Link do app ou site (opcional)' : 'Link';
+      tit.querySelector('label').textContent = v === 'app' ? 'Nome do app' : 'Título'; $('#sb-tit').placeholder = v === 'app' ? 'Ex.: CapCut' : 'Ex.: Como aquecer uma conta nova no Meta Ads';
+      tx.querySelector('label').textContent = v === 'link' ? 'Por que vale a pena (opcional)' : v === 'app' ? 'Para que serve e como vocês usam' : 'Anotação';
+      $('#sb-tx').placeholder = v === 'app' ? 'Ex.: editar vídeos no celular; usamos para os criativos dos anúncios. Grátis.' : 'O que você aprendeu, em tópicos.';
+      if (novo && v === 'app') $('#sb-tema').value = 'Apps'; };
     tp.addEventListener('click', () => setTimeout(mostra, 0));
     let extra = null; if (!novo) { extra = el('button', 'btn danger', 'Apagar'); extra.type = 'button'; extra.addEventListener('click', () => confirmar(extra, async () => { const { error } = await S.sb.from('neg_saber').delete().eq('id', it.id); if (error) { toast('Não consegui apagar'); return; } fecharSheet(); ir('#/saber'); carregarSaber(); })); }
-    sheet(novo ? (tipo === 'link' ? 'Salvar link' : 'Nova anotação') : 'Editar', [tp, url, tit, tm, tx], async () => {
+    sheet(novo ? (tipo === 'link' ? 'Salvar link' : tipo === 'app' ? 'Novo app' : 'Nova anotação') : 'Editar', [tp, url, tit, tm, tx], async () => {
       const v = $('#sb-tipo').dataset.value; let u = $('#sb-url').value.trim(); let ti = $('#sb-tit').value.trim(); const te = $('#sb-tx').value;
-      if (v === 'link') { if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u; if (!urlOk(u)) { toast('Confira o link'); $('#sb-url').focus(); return false; } if (!ti) ti = new URL(u).hostname.replace(/^www\./, ''); } else u = null;
+      if (v === 'link' || (v === 'app' && u)) { if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u; if (!urlOk(u)) { toast('Confira o link'); $('#sb-url').focus(); return false; } if (!ti) ti = new URL(u).hostname.replace(/^www\./, ''); } else u = null;
       if (!ti) { if (!te.trim()) { toast('Escreva um título'); $('#sb-tit').focus(); return false; } ti = te.trim().split('\n')[0].slice(0, 80); }
       const dados = { tipo: v, titulo: ti.slice(0, 160), texto: te.slice(0, 20000), url: u, tema: $('#sb-tema').value };
       const { error } = novo ? await S.sb.from('neg_saber').insert(dados) : await S.sb.from('neg_saber').update(dados).eq('id', it.id);
@@ -897,13 +910,13 @@ body { overscroll-behavior-y: contain; }
     if (!euVi(it)) { S.vistos.push({ item_id: id, user_id: S.uid }); S.sb.from('neg_saber_vistos').insert({ item_id: id }).then(() => {}); render(); }
     const corpo = [];
     const meta = el('div', 'ph-m'); meta.append(el('span', 'pill acc', it.tema), el('span', '', `${nomeUser(it.autor)} · ${dm(diaDe(it.criado_em))}`)); corpo.push(meta);
-    if (it.tipo === 'link' && urlOk(it.url)) { const a = el('a', 'btn'); a.href = it.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.innerHTML = (ehVideo(it.url) ? IC_VIDEO : IC.link) + `<span>Abrir ${ehVideo(it.url) ? 'vídeo' : 'link'} · ${new URL(it.url).hostname.replace(/^www\./, '')}</span>`; corpo.push(a); }
+    if ((it.tipo === 'link' || it.tipo === 'app') && urlOk(it.url)) { const a = el('a', 'btn'); a.href = it.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.innerHTML = (it.tipo === 'app' ? IC_APP : ehVideo(it.url) ? IC_VIDEO : IC.link) + `<span>Abrir ${it.tipo === 'app' ? 'app' : ehVideo(it.url) ? 'vídeo' : 'link'} · ${new URL(it.url).hostname.replace(/^www\./, '')}</span>`; corpo.push(a); }
     if (it.texto) corpo.push(el('p', 'sb-corpo', it.texto));
     const vis = vistoPor(id).filter((u) => u !== it.autor);
     corpo.push(el('p', 'sub', vis.length ? `Visto por ${vis.map(nomeUser).join(' e ')}` : 'Ninguém mais viu ainda'));
     const acoes = el('div', 'acoes');
     const cl = el('button', 'btn claude sm'); cl.type = 'button'; cl.innerHTML = IC.claude + '<span>Resumir com o Claude</span>';
-    cl.addEventListener('click', () => pedirAoClaude(`${it.tipo === 'link' ? `Este é um conteúdo que eu e meu sócio salvamos: ${it.url}` : 'Esta é uma anotação que eu e meu sócio fizemos.'}\nTítulo: ${it.titulo}\nTema: ${it.tema}\n${it.texto ? 'Nossas notas:\n' + it.texto + '\n' : ''}\nResuma os pontos principais em tópicos curtos e transforme em um passo a passo prático para aplicarmos no nosso negócio digital. Responda em português do Brasil.`));
+    cl.addEventListener('click', () => pedirAoClaude(`${it.tipo === 'app' ? `Este é um app que eu e meu sócio usamos ou queremos testar: ${it.titulo}${it.url ? ' (' + it.url + ')' : ''}. Diga para que ele serve num negócio digital, os melhores usos e alternativas.` : it.tipo === 'link' ? `Este é um conteúdo que eu e meu sócio salvamos: ${it.url}` : 'Esta é uma anotação que eu e meu sócio fizemos.'}\nTítulo: ${it.titulo}\nTema: ${it.tema}\n${it.texto ? 'Nossas notas:\n' + it.texto + '\n' : ''}\nResuma os pontos principais em tópicos curtos e transforme em um passo a passo prático para aplicarmos no nosso negócio digital. Responda em português do Brasil.`));
     acoes.appendChild(cl);
     if (it.autor === S.uid) { const ed = el('button', 'btn soft sm', 'Editar'); ed.type = 'button'; ed.addEventListener('click', () => openSaber(it)); acoes.appendChild(ed); }
     else { const nv = el('button', 'btn soft sm', 'Marcar como não visto'); nv.type = 'button'; nv.addEventListener('click', async () => { S.vistos = S.vistos.filter((v) => !(v.item_id === id && v.user_id === S.uid)); await S.sb.from('neg_saber_vistos').delete().match({ item_id: id, user_id: S.uid }); fecharSheet(); render(); }); acoes.appendChild(nv); }
@@ -988,17 +1001,25 @@ body { overscroll-behavior-y: contain; }
     const fotoR = escolhaImagem('Foto ou ícone', 'pj-foto', 'foto', p.foto, () => $('#pj-nome').value || 'P', () => $('#pj-cor').dataset.value);
     const banR = escolhaImagem('Banner', 'pj-ban', 'banner', p.banner);
     corR.addEventListener('change', () => fotoR.repinta()); nome.addEventListener('input', () => fotoR.repinta());
-    sheet(novo ? 'Novo projeto' : 'Editar projeto', [nome, fotoR, corR, banR, desc, eu], async () => {
+    const ocAtual = novo ? [] : ocultasDe(p.id);
+    const abasR = el('div', 'row'); abasR.appendChild(el('span', 'lbl', 'Abas deste projeto')); abasR.appendChild(el('p', 'sub', 'Desligue o que este projeto não usa. Os outros projetos não mudam e nada é apagado.'));
+    const ab = el('div', 'chips abas-pj'); ab.id = 'pj-abas'; ab.setAttribute('role', 'group'); ab.setAttribute('aria-label', 'Abas deste projeto');
+    SECOES.filter(([k]) => OPCIONAIS.includes(k)).forEach(([k, n]) => { const b = el('button', '', n); b.type = 'button'; b.dataset.k = k; b.setAttribute('aria-pressed', String(!ocAtual.includes(k))); b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'))); ab.appendChild(b); });
+    abasR.appendChild(ab);
+    const leAbas = () => $$('#pj-abas button').filter((b) => b.getAttribute('aria-pressed') !== 'true').map((b) => b.dataset.k);
+    sheet(novo ? 'Novo projeto' : 'Editar projeto', [nome, fotoR, corR, banR, desc, abasR, eu], async () => {
       const n = $('#pj-nome').value.trim(); if (!n) { toast('Dê um nome ao projeto'); $('#pj-nome').focus(); return false; }
       const cor = $('#pj-cor').dataset.value; const d = $('#pj-desc').value.trim(); const foto = $('#pj-foto').dataset.value || null; const banner = $('#pj-ban').dataset.value || null;
       if (novo) {
         const { data, error } = await S.sb.rpc('neg_criar_projeto', { p_nome: n, p_cor: cor, p_meu_nome: $('#pj-eu').value.trim() || S.nome || 'Eu' });
         if (error) { toast('Não consegui criar agora'); return false; }
         await S.sb.from('neg_projetos').update({ descricao: d, foto, banner }).eq('id', data.id);
+        const ocN = leAbas(); if (ocN.length) await S.sb.from('neg_docs').insert({ projeto_id: data.id, colecao: 'config', id: 'secoes', data: { ocultas: ocN } });
         await carregar(); ir('#/p/' + data.id); return true;
       }
       const { error } = await S.sb.from('neg_projetos').update({ nome: n, cor, descricao: d, foto, banner }).eq('id', p.id);
-      if (error) { toast('Não salvou'); return false; } Object.assign(p, { nome: n, cor, descricao: d, foto, banner }); render(); return true;
+      if (error) { toast('Não salvou'); return false; } Object.assign(p, { nome: n, cor, descricao: d, foto, banner });
+      const ocN = leAbas(); if (ocN.join() !== ocAtual.join()) salvar(p.id, 'config', 'secoes', { ocultas: ocN }, !docsDe(p.id).config.some((x) => x.id === 'secoes')); else render(); return true;
     }, extra, novo ? 'Criar' : 'Salvar');
   }
   function openEntrar() {
@@ -1023,7 +1044,8 @@ body { overscroll-behavior-y: contain; }
     bts.append(conv, ed); ph.appendChild(bts);
     const nav = el('nav', 'nav-sec'); nav.setAttribute('aria-label', 'Partes do projeto');
     const nl = naoLidas(p.id);
-    SECOES.forEach(([k, n]) => { const b = el('button', '', n); b.type = 'button'; if (k === sec) b.setAttribute('aria-current', 'page'); if (k === 'conversa' && nl && sec !== 'conversa') { const bd = el('span', 'badge', String(nl)); bd.setAttribute('aria-label', `${nl} novas`); b.appendChild(bd); } b.addEventListener('click', () => ir(`#/p/${p.id}/${k}`)); nav.appendChild(b); });
+    if (!secoesDe(p.id).some(([k]) => k === sec)) sec = 'visao';
+    secoesDe(p.id).forEach(([k, n]) => { const b = el('button', '', n); b.type = 'button'; if (k === sec) b.setAttribute('aria-current', 'page'); if (k === 'conversa' && nl && sec !== 'conversa') { const bd = el('span', 'badge', String(nl)); bd.setAttribute('aria-label', `${nl} novas`); b.appendChild(bd); } b.addEventListener('click', () => ir(`#/p/${p.id}/${k}`)); nav.appendChild(b); });
     const corpo = el('div', 'corpo');
     const fn = { visao: secVisao, tarefas: secTarefas, campanhas: secCampanhas, metricas: secMetricas, metas: secMetas, caderno: secCaderno, links: secLinks, conversa: secConversa }[sec];
     const rasc = $('#chat-txt') ? $('#chat-txt').value : null; const foco = document.activeElement && document.activeElement.id === 'chat-txt';
@@ -1061,28 +1083,29 @@ body { overscroll-behavior-y: contain; }
     const w = el('div'); const d = docsDe(p.id);
     const fs = segField('', 'vg-fase', FASES.map((f) => [f, f]), p.fase); fs.classList.add('fase-seg'); fs.querySelector('.seg').setAttribute('aria-label', 'Fase do projeto');
     fs.querySelector('.seg').addEventListener('change', async (e) => { const f = e.target.dataset.value; p.fase = f; render(); const { error } = await S.sb.from('neg_projetos').update({ fase: f }).eq('id', p.id); if (error) toast('Não salvou a fase'); });
-    w.appendChild(fs);
+    const oc = ocultasDe(p.id); const fl = el('p', 'lbl fase-l', 'Fase do projeto'); w.append(fl, fs);
     // números do mês
     const ym = HOJE().slice(0, 7); const k = kpisMes(p, ym);
     const s1 = el('section', 'sec'); const h1 = el('div', 'sec-h'); h1.appendChild(el('h2', '', 'Este mês')); const vm = el('button', 'btn soft sm', 'Ver métricas'); vm.type = 'button'; vm.addEventListener('click', () => ir(`#/p/${p.id}/metricas`)); h1.appendChild(vm); s1.appendChild(h1);
-    const kp = el('div', 'kpis'); k.slice(0, 4).forEach((x) => kp.appendChild(kpi(x))); s1.appendChild(kp); w.appendChild(s1);
+    const kp = el('div', 'kpis'); k.slice(0, 4).forEach((x) => kp.appendChild(kpi(x))); s1.appendChild(kp); if (!oc.includes('metricas')) w.appendChild(s1);
     const g = el('div', 'vg-grid sec');
     // próximas tarefas
     const ct = el('div', 'card'); const cth = el('div', 'sec-h'); cth.appendChild(el('h3', '', 'Próximas tarefas')); const vt = el('button', 'link', 'Ver todas'); vt.type = 'button'; vt.addEventListener('click', () => ir(`#/p/${p.id}/tarefas`)); cth.appendChild(vt); ct.appendChild(cth);
     const ab = d.tarefas.filter((t) => t.status !== 'feito').sort(ordTarefa).slice(0, 5);
     if (!ab.length) ct.appendChild(el('p', 'sub', 'Nada pendente.')); ab.forEach((t) => ct.appendChild(linhaTarefa(p, t, true)));
-    g.appendChild(ct);
+    if (!oc.includes('tarefas')) g.appendChild(ct);
     // campanhas
     const cc = el('div', 'card'); const cch = el('div', 'sec-h'); cch.appendChild(el('h3', '', 'Campanhas no ar')); const vc = el('button', 'link', 'Ver todas'); vc.type = 'button'; vc.addEventListener('click', () => ir(`#/p/${p.id}/campanhas`)); cch.appendChild(vc); cc.appendChild(cch);
     const ca = d.campanhas.filter((c) => c.status === 'Ativa' || c.status === 'Aquecendo');
     if (!ca.length) cc.appendChild(el('p', 'sub', 'Nenhuma campanha no ar.'));
     ca.forEach((c) => { const mi = el('div', 'mini'); const hh = el('div', 'mini-h'); hh.append(el('b', '', c.nome), el('span', 'pill ' + stCamp(c.status), c.status)); mi.appendChild(hh); const cpr = custoPor(c); mi.appendChild(el('span', 'cp-sub', `${brl.format(c.gasto || 0)} gastos${cpr !== null ? ' · ' + brl.format(cpr) + ' por ' + (c.tipo_res || 'resultado') : ''}`)); cc.appendChild(mi); });
-    g.appendChild(cc);
+    if (!oc.includes('campanhas')) g.appendChild(cc);
     // metas
     const cm = el('div', 'card'); const cmh = el('div', 'sec-h'); cmh.appendChild(el('h3', '', 'Metas')); const vmt = el('button', 'link', 'Ver todas'); vmt.type = 'button'; vmt.addEventListener('click', () => ir(`#/p/${p.id}/metas`)); cmh.appendChild(vmt); cm.appendChild(cmh);
     if (!d.metas.length) cm.appendChild(el('p', 'sub', 'Nenhuma meta ainda.'));
     d.metas.slice(0, 4).forEach((g2) => { const mi = el('div', 'mini'); const hh = el('div', 'mini-h'); hh.append(el('b', '', g2.titulo), el('span', 'num', `${fmtMeta(g2.atual, g2.unidade)} de ${fmtMeta(g2.alvo, g2.unidade)}`)); mi.append(hh, barra((g2.atual || 0) / (g2.alvo || 1))); cm.appendChild(mi); });
-    g.appendChild(cm);
+    if (!oc.includes('metas')) g.appendChild(cm);
+    if (oc.includes('tarefas') && oc.includes('campanhas') && oc.includes('metas')) { const cd = docsDe(p.id).caderno.slice().sort((a, b) => String(b.updated_at).localeCompare(String(a.updated_at))).slice(0, 4); const cn = el('div', 'card'); const ch = el('div', 'sec-h'); ch.appendChild(el('h3', '', 'Últimas anotações')); cn.appendChild(ch); if (!cd.length) cn.appendChild(el('p', 'sub', 'Nada anotado ainda.')); cd.forEach((n) => { const mi = el('button', 'nt'); mi.type = 'button'; mi.style.padding = '8px 0'; mi.append(el('b', '', n.titulo || 'Sem título')); mi.addEventListener('click', () => openNota(p.id, n)); cn.appendChild(mi); }); g.appendChild(cn); }
     w.appendChild(g);
     const cl = el('button', 'btn claude sec'); cl.type = 'button'; cl.innerHTML = IC.claude + '<span>Resumo e próximos passos com o Claude</span>';
     cl.addEventListener('click', () => pedirAoClaude(`Sou dono do projeto "${p.nome}" (fase: ${p.fase}). ${p.descricao ? 'Sobre: ' + p.descricao + '. ' : ''}Aqui estão os dados atuais do projeto (JSON):\n${JSON.stringify(resumoJson(p))}\n\nFaça um resumo direto de como o projeto está, aponte o que está travando ou atrasado, avalie as campanhas (custo por resultado, se vale continuar) e sugira os 5 próximos passos mais importantes, em ordem. Seja objetivo, em português do Brasil.`));
