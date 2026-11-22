@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://lpnzcxxxywaknghxcpah.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Negócios</title>
 <meta name="description" content="Seus projetos e negócios num lugar só: tarefas, metas, métricas, campanhas, caderno e conversa.">
@@ -324,6 +324,50 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
 .sb-coms { display: flex; flex-direction: column; gap: 4px; }
 .sb-cf { padding: 0; border: 0; }
 .lbl { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--fg-2); }
+
+/* personalização */
+.av, .proj-ic, .av-in, .esc-av { overflow: hidden; }
+.av.com-img, .proj-ic.com-img, .av-in.com-img, .esc-av.com-img { background: var(--fill); padding: 0; }
+.com-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.proj-ic.com-ic, .av.com-ic, .av-in.com-ic, .esc-av.com-ic { background: var(--cor); color: #fff; }
+.com-ic svg { width: 58%; height: 58%; }
+.av-btn { padding: 0; overflow: hidden; }
+.av-in { width: 100%; height: 100%; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--cor) 18%, transparent); color: var(--cor); font-weight: 700; }
+.av { background: color-mix(in srgb, var(--cor, var(--accent)) 18%, transparent); color: var(--cor, var(--accent)); }
+.pf-linha { appearance: none; border: 0; background: var(--fill); border-radius: 14px; padding: 10px 12px; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.pf-linha .av { width: 44px; height: 44px; font-size: 18px; }
+.pf-t { flex: 1; min-width: 0; display: grid; } .pf-t span { font-size: 13px; color: var(--fg-2); overflow: hidden; text-overflow: ellipsis; }
+.ola-box.com-banner { position: relative; padding: 22px 18px 18px; border-radius: var(--r); overflow: hidden; color: #fff; isolation: isolate; margin: 0 0 4px; }
+.ola-box.com-banner::before { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--bn); }
+.ola-box.com-banner::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.45)); }
+.ola-box.com-banner .sub { color: rgba(255,255,255,.85); }
+.proj { position: relative; overflow: hidden; }
+.proj.com-bn { padding-top: 64px; }
+.proj-bn { position: absolute; left: 0; right: 0; top: 0; height: 52px; }
+.proj.com-bn .proj-ic { margin-top: -30px; box-shadow: 0 0 0 3px var(--panel); }
+.proj.com-bn .proj-ic:not(.com-ic):not(.com-img) { background-color: var(--panel); background-image: linear-gradient(color-mix(in srgb, var(--cor) 16%, transparent), color-mix(in srgb, var(--cor) 16%, transparent)); }
+.ph.com-bn { position: relative; padding: 76px 14px 14px; border-radius: var(--r); overflow: hidden; isolation: isolate; color: #fff; }
+.ph.com-bn::before { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--bn); }
+.ph.com-bn::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,0,0,0) 20%, rgba(0,0,0,.55)); }
+.ph.com-bn .ph-m { color: rgba(255,255,255,.88); }
+.ph.com-bn .ic-btn { background: rgba(255,255,255,.22); color: #fff; }
+.ph.com-bn .proj-ic { box-shadow: 0 0 0 3px rgba(255,255,255,.7); }
+.proj-ic.com-ic { background: var(--cor); }
+.esc-banners { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.esc-banners .esc-op { height: 40px; border-radius: 10px; }
+.esc-fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 8px; }
+.esc-fotos .esc-op { height: 44px; border-radius: 12px; background: var(--fill); display: grid; place-items: center; color: var(--fg-2); }
+.esc-op { appearance: none; border: 0; cursor: pointer; padding: 0; box-shadow: inset 0 0 0 1px var(--sep); transition: transform .25s cubic-bezier(.34,1.4,.64,1); }
+.esc-op:active { transform: scale(.92); }
+.esc-op[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px var(--accent); }
+.esc-ic svg { width: 22px; height: 22px; display: block; } .esc-ini { font-weight: 700; }
+.esc-prev-b { height: 84px; border-radius: 14px; display: grid; place-items: center; color: var(--fg-3); font-size: 13px; background: var(--fill); }
+.esc-prev-f { display: flex; justify-content: center; }
+.esc-av { width: 72px; height: 72px; border-radius: 22px; display: grid; place-items: center; font-size: 28px; font-weight: 700; background: color-mix(in srgb, var(--cor) 18%, transparent); color: var(--cor); }
+.cor-livre { position: relative; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; background: conic-gradient(#ff3b30, #ff9500, #ffcc00, #34c759, #00c7be, #0071e3, #5e5ce6, #ff2d55, #ff3b30); box-shadow: inset 0 0 0 2px rgba(255,255,255,.6); }
+.cor-livre[style*="--cor"] { background: var(--cor); }
+.cor-livre input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.cores button[data-v] { width: 34px; height: 34px; }
 </style>
 </head>
 <body>
@@ -427,8 +471,8 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   const COLS = ['tarefas', 'metas', 'metricas', 'campanhas', 'caderno', 'links', 'mural', 'config'];
   const CORES = ['teal', 'azul', 'roxo', 'rosa', 'laranja', 'amarelo', 'verde', 'cinza'];
   const FASES = ['Ideia', 'Desenvolvimento', 'Lançado', 'Pausado'];
-  const S = { sb: null, uid: null, email: '', nome: '', projetos: [], membros: new Map(), docs: new Map(), carregado: false, canal: null, saber: [], vistos: [], coment: [] };
-  const corVar = (c) => `var(--c-${CORES.includes(c) ? c : 'teal'})`;
+  const S = { sb: null, uid: null, email: '', nome: '', projetos: [], membros: new Map(), docs: new Map(), carregado: false, canal: null, perfis: new Map(), saber: [], vistos: [], coment: [] };
+  const corVar = (c) => (/^#[0-9a-f]{6}$/i.test(c || '') ? c : `var(--c-${CORES.includes(c) ? c : 'teal'})`);
   const docsDe = (pid) => { if (!S.docs.has(pid)) S.docs.set(pid, Object.fromEntries(COLS.map((c) => [c, []]))); return S.docs.get(pid); };
   const membrosDe = (pid) => S.membros.get(pid) || [];
   const nomeDe = (pid, uid) => { const m = membrosDe(pid).find((x) => x.user_id === uid); return m ? m.nome : 'Alguém'; };
@@ -448,7 +492,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   const apagar = (pid, col, id) => { const o = docsDe(pid)[col].find((x) => x.id === id); return salvar(pid, col, id, { ...limpo(o || {}), apagado: true }, false); };
   async function carregar() {
     const [p, m, d] = await Promise.all([
-      S.sb.from('neg_projetos').select('id,nome,cor,fase,descricao,codigo,dono,criado_em').order('criado_em'),
+      S.sb.from('neg_projetos').select('id,nome,cor,fase,descricao,codigo,dono,criado_em,foto,banner').order('criado_em'),
       S.sb.from('neg_membros').select('projeto_id,user_id,nome'),
       S.sb.from('neg_docs').select('projeto_id,colecao,id,data,autor,criado_em,updated_at').order('criado_em').limit(10000)
     ]);
@@ -456,6 +500,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     S.erro = false; S.projetos = p.data || []; S.membros = new Map(); (m.data || []).forEach((x) => { const l = S.membros.get(x.projeto_id) || []; l.push(x); S.membros.set(x.projeto_id, l); });
     S.docs = new Map(); (d.data || []).forEach(aplica); S.carregado = true;
     await carregarSaber(true);
+    await carregarPerfis();
     const eu = (m.data || []).find((x) => x.user_id === S.uid); if (eu && !S.nome) S.nome = eu.nome;
     render();
   }
@@ -464,6 +509,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     S.canal = S.sb.channel('neg')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_docs' }, (p) => { if (p.new && p.new.colecao) { aplica(p.new); if (p.new.colecao === 'mural' && rota().sec === 'conversa' && rota().pid === p.new.projeto_id) marcaVisto(p.new.projeto_id); render(); } })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_membros' }, () => carregar())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_perfis' }, () => carregarPerfis().then(render))
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_saber' }, () => carregarSaber())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_saber_vistos' }, () => carregarSaber())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_saber_coment' }, () => carregarSaber())
@@ -490,11 +536,11 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     const esq = el('div', 'top-t');
     if (p || naSaber()) { const v = el('button', 'voltar'); v.type = 'button'; v.innerHTML = IC.voltar + `<span>${p ? 'Projetos' : 'Início'}</span>`; v.addEventListener('click', () => ir('#/')); esq.appendChild(v); }
     else { const m = el('div', 'marca'); m.innerHTML = IC.marca; m.appendChild(el('span', '', 'Negócios')); esq.appendChild(m); }
-    const av = el('button', 'av-btn', inicial(S.nome || S.email)); av.type = 'button'; av.setAttribute('aria-label', 'Sua conta'); av.addEventListener('click', openConta);
+    const av = el('button', 'av-btn'); av.appendChild(fotoUser(S.uid, S.nome || S.email, 'av-in')); av.type = 'button'; av.setAttribute('aria-label', 'Sua conta'); av.addEventListener('click', openConta);
     t.replaceChildren(esq, av);
   }
   function openConta() {
-    const info = el('div', 'mb'); info.append(el('span', 'av', inicial(S.nome || S.email)), el('span', '', S.email));
+    const info = el('button', 'mb pf-linha'); info.type = 'button'; const ti = el('span', 'pf-t'); ti.append(el('b', '', S.nome || 'Seu perfil'), el('span', '', S.email)); info.append(fotoUser(S.uid, S.nome || S.email), ti, el('span', 'pill acc', 'Personalizar')); info.addEventListener('click', () => { fecharSheet(); setTimeout(openPerfil, 220); });
     const tema = segField('Aparência', 'ng-tema', [['auto', 'Automática'], ['light', 'Clara'], ['dark', 'Escura']], (() => { try { return localStorage.getItem('pv-tema') || 'auto'; } catch (e) { return 'auto'; } })());
     tema.querySelector('.seg').addEventListener('change', (e) => { const v = e.target.dataset.value; try { if (v === 'auto') localStorage.removeItem('pv-tema'); else localStorage.setItem('pv-tema', v); } catch (x) { /* sem armazenamento */ } if (v === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', v); });
     const painel = el('a', 'btn soft', 'Abrir o Painel da Vida'); painel.href = 'https://leofonseca30102009.github.io/Painel-da-Vida/';
@@ -511,6 +557,103 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     if (naSaber()) { renderSaber(); return; }
     if (r.pid) { const p = proj(r.pid); if (!p) { ir('#/'); return; } renderProjeto(p, r.sec); }
     else renderInicio();
+  }
+
+  /* ---------- personalização: foto, banner e cor (modelos prontos ou imagem enviada) ---------- */
+  const BANNERS = {
+    aurora: 'linear-gradient(120deg, #0a2a6b, #0071e3 55%, #5ac8fa)',
+    oceano: 'linear-gradient(135deg, #003b5c, #0a84b8 50%, #34c8c8)',
+    'por-do-sol': 'linear-gradient(120deg, #ff7a18, #ff4d4d 50%, #c33764)',
+    floresta: 'linear-gradient(135deg, #0b3d2e, #1f7a4d 55%, #8bd17c)',
+    grafite: 'linear-gradient(135deg, #1c1c1e, #3a3a3c 60%, #636366)',
+    neon: 'radial-gradient(circle at 20% 30%, #00e0ff 0, transparent 40%), radial-gradient(circle at 80% 70%, #ff2bd6 0, transparent 45%), #0d0b1f',
+    areia: 'linear-gradient(135deg, #f6d6a8, #e7a96b 55%, #c97b4a)',
+    cereja: 'linear-gradient(135deg, #3d0a1a, #a1124a 55%, #ff5c8a)',
+    menta: 'linear-gradient(135deg, #d8fff1, #7de3c3 55%, #2fb89a)',
+    noite: 'radial-gradient(circle at 70% 20%, #3b5bdb 0, transparent 45%), radial-gradient(circle at 20% 80%, #7048e8 0, transparent 40%), #0b0d1a',
+    ouro: 'linear-gradient(135deg, #3a2a00, #b88a00 50%, #ffd34d)',
+    lavanda: 'linear-gradient(135deg, #e9e4ff, #b9a7ff 55%, #7b61ff)'
+  };
+  const ICONES = {
+    loja: 'M4 9.5 5.5 4h13L20 9.5M4 9.5h16M4 9.5c0 1.5 1.2 2.5 2.7 2.5S9.3 11 9.3 9.5c0 1.5 1.2 2.5 2.7 2.5s2.7-1 2.7-2.5c0 1.5 1.2 2.5 2.6 2.5S20 11 20 9.5M5.5 12v8h13v-8M10 20v-5h4v5',
+    foguete: 'M12 3c3 2 5 5.5 5 9.5L14.5 15h-5L7 12.5C7 8.5 9 5 12 3zM12 9.5a1.5 1.5 0 1 0 0 .01M9.5 15 8 19l3-1.5M14.5 15l1.5 4-3-1.5',
+    camera: 'M4 8h3.5L9 5.5h6L16.5 8H20v11H4zM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7',
+    controle: 'M7 8h10a4 4 0 0 1 4 4v1.5a3 3 0 0 1-5.4 1.8L14.5 14h-5l-1.1 1.3A3 3 0 0 1 3 13.5V12a4 4 0 0 1 4-4zM8 10.5v3M6.5 12h3M15.5 11h.01M17.5 13h.01',
+    comida: 'M7 3v8M5 3v4a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 0-3 2.5-3 6h3v12',
+    grafico: 'M4 20V10M10 20V4M16 20v-7M21 20H3',
+    raio: 'M13 2 5 13.5h6L10 22l8-11.5h-6z',
+    coracao: 'M12 20s-7.5-4.5-7.5-10A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 7.5 3c0 5.5-7.5 10-7.5 10z',
+    codigo: 'M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16',
+    megafone: 'M4 10v4h3l7 4V6l-7 4zM17 9.5a3.5 3.5 0 0 1 0 5M7 14l1.5 5h2.5l-1-5',
+    estrela: 'M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z',
+    globo: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z'
+  };
+  const imgCss = (v) => { if (!v) return ''; if (v.startsWith('t:')) return BANNERS[v.slice(2)] || ''; if (v.startsWith('u:')) { const u = v.slice(2); return /^https:\/\/lpnzcxxxywaknghxcpah\.supabase\.co\//.test(u) ? `center / cover no-repeat url("${u.replace(/["\\]/g, '')}")` : ''; } return ''; };
+  // foto: imagem enviada, ícone pronto ou a inicial na cor escolhida
+  function fotoEl(foto, nome, cor, cls) {
+    const f = el('span', cls || 'av'); f.style.setProperty('--cor', corVar(cor));
+    if (foto && foto.startsWith('u:') && /^https:\/\/lpnzcxxxywaknghxcpah\.supabase\.co\//.test(foto.slice(2))) { const im = el('img'); im.src = foto.slice(2); im.alt = ''; im.loading = 'lazy'; f.classList.add('com-img'); f.appendChild(im); }
+    else if (foto && foto.startsWith('t:') && ICONES[foto.slice(2)]) { f.classList.add('com-ic'); f.innerHTML = svg(ICONES[foto.slice(2)], 1.8); }
+    else f.textContent = inicial(nome);
+    return f;
+  }
+  async function carregarPerfis() {
+    const { data, error } = await S.sb.from('neg_perfis').select('user_id,nome,cor,foto,banner'); if (error) return;
+    S.perfis = new Map((data || []).map((x) => [x.user_id, x])); const eu = S.perfis.get(S.uid); if (eu && eu.nome) S.nome = eu.nome;
+  }
+  const perfilDe = (u) => S.perfis.get(u) || {};
+  const fotoUser = (u, nome, cls) => { const pf = perfilDe(u); return fotoEl(pf.foto, pf.nome || nome, pf.cor || 'azul', cls); };
+  // reduz a imagem no aparelho e envia para a pasta da pessoa
+  async function enviarImagem(file, tipo) {
+    if (!file || !/^image\//.test(file.type)) { toast('Escolha uma imagem'); return null; }
+    const [W, H] = tipo === 'banner' ? [1200, 420] : [320, 320];
+    let bmp; try { bmp = await createImageBitmap(file); } catch (e) { toast('Não consegui abrir essa imagem'); return null; }
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const cx = cv.getContext('2d');
+    const esc = Math.max(W / bmp.width, H / bmp.height); const w = bmp.width * esc, h = bmp.height * esc; cx.drawImage(bmp, (W - w) / 2, (H - h) / 2, w, h);
+    let blob = await new Promise((res) => cv.toBlob(res, 'image/webp', 0.82)); let ext = 'webp';
+    if (!blob || blob.type !== 'image/webp') { blob = await new Promise((res) => cv.toBlob(res, 'image/jpeg', 0.85)); ext = 'jpg'; }
+    const caminho = `${S.uid}/${tipo}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}.${ext}`;
+    const { error } = await S.sb.storage.from('neg-imagens').upload(caminho, blob, { contentType: blob.type, upsert: false });
+    if (error) { toast('Não consegui enviar a imagem'); return null; }
+    return 'u:' + S.sb.storage.from('neg-imagens').getPublicUrl(caminho).data.publicUrl;
+  }
+  // bloco de escolha: modelos prontos + enviar do aparelho
+  function escolhaImagem(rot, id, tipo, val, nome, corAtual) {
+    const r = el('div', 'row'); const l = el('span', 'lbl', rot); l.id = id + '-l'; r.appendChild(l);
+    const w = el('div', tipo === 'banner' ? 'esc-banners' : 'esc-fotos'); w.id = id; w.dataset.value = val || ''; w.setAttribute('role', 'group'); w.setAttribute('aria-labelledby', id + '-l');
+    const prev = el('div', tipo === 'banner' ? 'esc-prev-b' : 'esc-prev-f');
+    const pinta = () => { const v = w.dataset.value; if (tipo === 'banner') { prev.style.background = imgCss(v) || 'var(--fill)'; prev.textContent = v ? '' : 'Sem banner'; } else prev.replaceChildren(fotoEl(v, nome(), corAtual(), 'esc-av')); $$('button[data-v]', w).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === v))); };
+    const opc = (v, conteudo, rotulo) => { const b = el('button', 'esc-op'); b.type = 'button'; b.dataset.v = v; b.setAttribute('aria-label', rotulo); if (typeof conteudo === 'string') b.style.background = conteudo; else b.appendChild(conteudo); b.addEventListener('click', () => { w.dataset.value = v; pinta(); }); w.appendChild(b); };
+    if (tipo === 'banner') { opc('', 'var(--fill)', 'Sem banner'); Object.entries(BANNERS).forEach(([k, g]) => opc('t:' + k, g, 'Banner ' + k)); }
+    else { opc('', el('span', 'esc-ini', 'Aa'), 'Usar a inicial'); Object.entries(ICONES).forEach(([k, d]) => { const i = el('span', 'esc-ic'); i.innerHTML = svg(d, 1.8); opc('t:' + k, i, 'Ícone ' + k); }); }
+    const fi = el('input'); fi.type = 'file'; fi.accept = 'image/*'; fi.hidden = true;
+    const up = el('button', 'btn soft sm', tipo === 'banner' ? 'Enviar imagem do aparelho' : 'Enviar foto do aparelho'); up.type = 'button'; up.addEventListener('click', () => fi.click());
+    fi.addEventListener('change', async () => { const f = fi.files && fi.files[0]; if (!f) return; up.disabled = true; up.textContent = 'Enviando…'; const v = await enviarImagem(f, tipo === 'banner' ? 'banner' : 'foto'); up.disabled = false; up.textContent = tipo === 'banner' ? 'Trocar imagem' : 'Trocar foto'; if (v) { w.dataset.value = v; pinta(); } fi.value = ''; });
+    r.append(prev, w, up, fi); r.repinta = pinta; setTimeout(pinta, 0); return r;
+  }
+  function corSelLivre(id, val) {
+    const r = el('div', 'row'); const l = el('span', 'lbl', 'Cor'); l.id = id + '-l'; r.appendChild(l);
+    const w = el('div', 'cores'); w.id = id; w.dataset.value = val; w.setAttribute('role', 'group'); w.setAttribute('aria-labelledby', id + '-l');
+    const marca = () => $$('button', w).forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.v === w.dataset.value)));
+    CORES.forEach((c) => { const b = el('button'); b.type = 'button'; b.dataset.v = c; b.style.setProperty('--cor', corVar(c)); b.setAttribute('aria-label', c); b.addEventListener('click', () => { w.dataset.value = c; marca(); w.dispatchEvent(new Event('change', { bubbles: true })); }); w.appendChild(b); });
+    const lv = el('label', 'cor-livre'); lv.title = 'Escolher outra cor'; const ci = el('input'); ci.type = 'color'; ci.value = /^#/.test(val) ? val : '#0071e3'; ci.setAttribute('aria-label', 'Escolher outra cor');
+    if (/^#/.test(val)) lv.style.setProperty('--cor', val);
+    ci.addEventListener('input', () => { w.dataset.value = ci.value; lv.style.setProperty('--cor', ci.value); marca(); w.dispatchEvent(new Event('change', { bubbles: true })); }); lv.appendChild(ci); w.appendChild(lv);
+    r.appendChild(w); setTimeout(marca, 0); return r;
+  }
+  function openPerfil() {
+    const pf = perfilDe(S.uid);
+    const nome = field('Seu nome', 'pf-nome', { maxlength: '40', value: pf.nome || S.nome || '' });
+    const cor = corSelLivre('pf-cor', pf.cor || 'azul');
+    const foto = escolhaImagem('Foto', 'pf-foto', 'foto', pf.foto, () => $('#pf-nome').value || S.email, () => $('#pf-cor').dataset.value);
+    const ban = escolhaImagem('Banner', 'pf-ban', 'banner', pf.banner);
+    cor.addEventListener('change', () => foto.repinta()); nome.addEventListener('input', () => foto.repinta());
+    sheet('Seu perfil', [foto, nome, cor, ban], async () => {
+      const n = $('#pf-nome').value.trim(); const dados = { user_id: S.uid, nome: n || null, cor: $('#pf-cor').dataset.value, foto: $('#pf-foto').dataset.value || null, banner: $('#pf-ban').dataset.value || null, updated_at: new Date().toISOString() };
+      const { error } = await S.sb.from('neg_perfis').upsert(dados, { onConflict: 'user_id' }); if (error) { toast('Não salvou'); return false; }
+      if (n) { S.nome = n; await S.sb.from('neg_membros').update({ nome: n }).eq('user_id', S.uid); }
+      S.perfis.set(S.uid, dados); await carregar(); toast('Perfil salvo'); return true;
+    });
   }
 
   /* ---------- conhecimento (compartilhado com quem trabalha com você) ---------- */
@@ -634,7 +777,8 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   }
   function renderInicio() {
     const app = $('#app'); const h = new Date().getHours();
-    const top = el('div'); top.append(el('h1', '', (h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite') + (S.nome ? ', ' + S.nome.split(' ')[0] : '')));
+    const top = el('div', 'ola-box'); const bpf = imgCss(perfilDe(S.uid).banner); if (bpf) { top.classList.add('com-banner'); top.style.setProperty('--bn', bpf); }
+    top.append(el('h1', '', (h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite') + (S.nome ? ', ' + S.nome.split(' ')[0] : '')));
     const nP = S.projetos.length; top.appendChild(el('p', 'sub ola', nP ? `${nP} ${nP === 1 ? 'projeto' : 'projetos'} em andamento` : 'Comece criando seu primeiro projeto.'));
     const kids = [top, cartaoSaber()];
     // para você
@@ -665,7 +809,8 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
       S.projetos.forEach((p) => {
         const st = statsProj(p); const nl = naoLidas(p.id);
         const c = el('button', 'card proj'); c.type = 'button'; c.style.setProperty('--cor', corVar(p.cor)); c.addEventListener('click', () => ir('#/p/' + p.id));
-        const hh = el('div', 'proj-h'); hh.appendChild(el('span', 'proj-ic', inicial(p.nome)));
+        const bn = imgCss(p.banner); if (bn) { const fx = el('span', 'proj-bn'); fx.style.background = bn; c.appendChild(fx); c.classList.add('com-bn'); }
+        const hh = el('div', 'proj-h'); hh.appendChild(fotoEl(p.foto, p.nome, p.cor, 'proj-ic'));
         const n = el('div', 'proj-n'); n.appendChild(el('b', '', p.nome)); const sb = el('div', 'ph-m'); sb.appendChild(el('span', 'pill ' + faseCls(p.fase), p.fase)); sb.appendChild(el('span', '', `${membrosDe(p.id).length} ${membrosDe(p.id).length === 1 ? 'pessoa' : 'pessoas'}`)); n.appendChild(sb); hh.appendChild(n);
         if (nl) { const b = el('span', 'badge', String(nl)); b.setAttribute('aria-label', `${nl} mensagens novas`); hh.appendChild(b); }
         const stt = el('div', 'proj-st');
@@ -693,17 +838,21 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     const eu = novo ? field('Seu nome no projeto', 'pj-eu', { maxlength: '40', value: S.nome || '' }) : null;
     let extra = null;
     if (!novo && p.dono === S.uid) { extra = el('button', 'btn danger', 'Apagar projeto'); extra.type = 'button'; extra.addEventListener('click', () => confirmar(extra, async () => { const { error } = await S.sb.from('neg_projetos').delete().eq('id', p.id); if (error) { toast('Não consegui apagar'); return; } fecharSheet(); ir('#/'); carregar(); toast('Projeto apagado'); }, 'Apaga tudo do projeto. Tocar de novo')); }
-    sheet(novo ? 'Novo projeto' : 'Editar projeto', [nome, corSel(p.cor), desc, eu], async () => {
+    const corR = corSelLivre('pj-cor', p.cor || 'azul');
+    const fotoR = escolhaImagem('Foto ou ícone', 'pj-foto', 'foto', p.foto, () => $('#pj-nome').value || 'P', () => $('#pj-cor').dataset.value);
+    const banR = escolhaImagem('Banner', 'pj-ban', 'banner', p.banner);
+    corR.addEventListener('change', () => fotoR.repinta()); nome.addEventListener('input', () => fotoR.repinta());
+    sheet(novo ? 'Novo projeto' : 'Editar projeto', [nome, fotoR, corR, banR, desc, eu], async () => {
       const n = $('#pj-nome').value.trim(); if (!n) { toast('Dê um nome ao projeto'); $('#pj-nome').focus(); return false; }
-      const cor = $('#pj-cor').dataset.value; const d = $('#pj-desc').value.trim();
+      const cor = $('#pj-cor').dataset.value; const d = $('#pj-desc').value.trim(); const foto = $('#pj-foto').dataset.value || null; const banner = $('#pj-ban').dataset.value || null;
       if (novo) {
         const { data, error } = await S.sb.rpc('neg_criar_projeto', { p_nome: n, p_cor: cor, p_meu_nome: $('#pj-eu').value.trim() || S.nome || 'Eu' });
         if (error) { toast('Não consegui criar agora'); return false; }
-        if (d) await S.sb.from('neg_projetos').update({ descricao: d }).eq('id', data.id);
+        await S.sb.from('neg_projetos').update({ descricao: d, foto, banner }).eq('id', data.id);
         await carregar(); ir('#/p/' + data.id); return true;
       }
-      const { error } = await S.sb.from('neg_projetos').update({ nome: n, cor, descricao: d }).eq('id', p.id);
-      if (error) { toast('Não salvou'); return false; } Object.assign(p, { nome: n, cor, descricao: d }); render(); return true;
+      const { error } = await S.sb.from('neg_projetos').update({ nome: n, cor, descricao: d, foto, banner }).eq('id', p.id);
+      if (error) { toast('Não salvou'); return false; } Object.assign(p, { nome: n, cor, descricao: d, foto, banner }); render(); return true;
     }, extra, novo ? 'Criar' : 'Salvar');
   }
   function openEntrar() {
@@ -720,7 +869,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
   /* ---------- projeto ---------- */
   function renderProjeto(p, sec) {
     const app = $('#app'); const ms = membrosDe(p.id);
-    const ph = el('div', 'ph'); ph.style.setProperty('--cor', corVar(p.cor)); ph.appendChild(el('span', 'proj-ic', inicial(p.nome)));
+    const ph = el('div', 'ph'); ph.style.setProperty('--cor', corVar(p.cor)); const pbn = imgCss(p.banner); if (pbn) { ph.classList.add('com-bn'); ph.style.setProperty('--bn', pbn); } ph.appendChild(fotoEl(p.foto, p.nome, p.cor, 'proj-ic'));
     const t = el('div', 'ph-t'); t.appendChild(el('h1', '', p.nome)); const m = el('div', 'ph-m'); m.appendChild(el('span', 'pill ' + faseCls(p.fase), p.fase)); m.appendChild(el('span', '', ms.map((x) => (x.user_id === S.uid ? 'você' : x.nome)).join(', '))); t.appendChild(m); ph.appendChild(t);
     const bts = el('div', 'acoes');
     const conv = el('button', 'ic-btn'); conv.type = 'button'; conv.innerHTML = IC.pessoas; conv.setAttribute('aria-label', 'Pessoas e convite'); conv.addEventListener('click', () => openPessoas(p));
@@ -752,7 +901,7 @@ textarea.field { min-height: 44px; padding: 10px 12px; line-height: 1.45; resize
     if (dono) { const tr = el('button', 'btn sm soft', 'Trocar código'); tr.type = 'button'; tr.addEventListener('click', () => confirmar(tr, async () => { const { data, error } = await S.sb.rpc('neg_novo_codigo', { p_projeto: p.id }); if (error) { toast('Não consegui trocar'); return; } p.codigo = data; cod.textContent = data; toast('Código novo. O antigo não funciona mais.'); })); a.appendChild(tr); }
     corpo.push(a);
     const l = el('div'); l.appendChild(el('p', 'lbl', 'Quem está no projeto'));
-    ms.forEach((x) => { const r = el('div', 'mb'); r.append(el('span', 'av', inicial(x.nome)), el('span', '', x.user_id === S.uid ? x.nome + ' (você)' : x.nome)); if (x.user_id === p.dono) r.appendChild(el('span', 'pill', 'dono'));
+    ms.forEach((x) => { const r = el('div', 'mb'); r.append(fotoUser(x.user_id, x.nome), el('span', '', x.user_id === S.uid ? x.nome + ' (você)' : x.nome)); if (x.user_id === p.dono) r.appendChild(el('span', 'pill', 'dono'));
       else if (dono) { const rm = el('button', 'btn sm danger', 'Remover'); rm.type = 'button'; rm.addEventListener('click', () => confirmar(rm, async () => { const { error } = await S.sb.from('neg_membros').delete().match({ projeto_id: p.id, user_id: x.user_id }); if (error) { toast('Não consegui remover'); return; } r.remove(); carregar(); }, 'Confirmar')); r.appendChild(rm); }
       l.appendChild(r); });
     corpo.push(l);
