@@ -477,6 +477,8 @@ body { overscroll-behavior-y: contain; }
 .tick.lido svg { opacity: 1; color: #7fe3ff; }
 .msg:not(.meu) .tick.lido svg { color: var(--accent); }
 @media (max-width: 48rem) { .toast { bottom: calc(96px + env(safe-area-inset-bottom)); } }
+.sb-comp { margin: 0; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 14.5px; line-height: 1.3; }
+.sb-comp svg { width: 18px; height: 18px; flex: none; }
 </style>
 </head>
 <body>
@@ -870,7 +872,9 @@ body { overscroll-behavior-y: contain; }
   let sbTema = 'Todos', sbFiltro = 'todos';
   function renderSaber() {
     const app = $('#app');
-    const h = el('div', 'sec-h'); const ht = el('div'); ht.append(el('p', 'lead', 'O que vocês aprendem, num lugar só. Vocês dois veem tudo.'));
+    const outros = []; for (const l of S.membros.values()) l.forEach((m) => { if (m.user_id !== S.uid && !outros.some((o) => o.user_id === m.user_id)) outros.push(m); });
+    const nomesO = outros.map((m) => nomeUser(m.user_id)); const quem = nomesO.length ? nomesO.join(' e ') : 'quem estiver nos seus projetos';
+    const h = el('div', 'sec-h'); const ht = el('div'); const cp = el('p', 'sb-comp'); cp.innerHTML = svg('M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM20 19v-1.5a3.5 3.5 0 0 0-2.5-3.35M15.5 4.2a3.5 3.5 0 0 1 0 6.6'); cp.appendChild(el('span', '', `Compartilhado: você e ${quem} veem tudo aqui.`)); ht.append(cp);
     const ac = el('div', 'acoes');
     const nl = el('button', 'btn soft sm'); nl.type = 'button'; nl.innerHTML = IC.link + '<span>Link</span>'; nl.addEventListener('click', () => openSaber(null, 'link'));
     const na = el('button', 'btn soft sm'); na.type = 'button'; na.innerHTML = IC_APP + '<span>App</span>'; na.addEventListener('click', () => openSaber(null, 'app'));
