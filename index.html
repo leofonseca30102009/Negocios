@@ -479,6 +479,27 @@ body { overscroll-behavior-y: contain; }
 @media (max-width: 48rem) { .toast { bottom: calc(96px + env(safe-area-inset-bottom)); } }
 .sb-comp { margin: 0; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 650; font-size: 14.5px; line-height: 1.3; }
 .sb-comp svg { width: 18px; height: 18px; flex: none; }
+
+/* processo */
+.tipo-grid { display: grid; gap: 8px; }
+.tipo-op { appearance: none; border: 0; background: var(--fill); border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 12px; text-align: left; font: inherit; color: inherit; cursor: pointer; transition: transform .25s cubic-bezier(.34,1.4,.64,1); }
+.tipo-op:active { transform: scale(.97); }
+.tipo-op .sb-tx2 small { color: var(--fg-2); font-size: 13px; }
+.pr-etapas { display: grid; gap: 10px; }
+.pr-et { display: grid; gap: 8px; padding: 10px; border-radius: 14px; background: var(--fill); }
+.pr-et-h { display: flex; align-items: center; gap: 8px; } .pr-et-h .field { flex: 1; min-width: 0; background: var(--panel); }
+.pr-et .field { background: var(--panel); }
+.st-n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #fff; font-weight: 700; font-size: 13px; flex: none; }
+.pr-prog { display: grid; gap: 8px; } .pr-prog > div { display: grid; gap: 4px; font-size: 13px; color: var(--fg-2); font-weight: 600; }
+.pr-lista { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.pr-v { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 14px; background: var(--fill); }
+.pr-v.feito .pr-v-tx > b { color: var(--fg-3); text-decoration: line-through; }
+.pr-v-tx { flex: 1; min-width: 0; display: grid; gap: 4px; } .pr-v-tx b { font-weight: 650; overflow-wrap: anywhere; } .pr-n { color: var(--accent); }
+.pr-v-tx p { margin: 0; color: var(--fg-2); font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pr-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 2px; }
+.pr-app { appearance: none; border: 0; cursor: pointer; font: inherit; font-size: 12px; font-weight: 650; display: inline-flex; gap: 5px; align-items: center; }
+.pr-app svg { width: 13px; height: 13px; } .pr-app:disabled { cursor: default; opacity: .8; }
+.pr-meta .link { font-size: 13px; padding: 0; }
 </style>
 </head>
 <body>
@@ -595,7 +616,7 @@ body { overscroll-behavior-y: contain; }
   const COLS = ['tarefas', 'metas', 'metricas', 'campanhas', 'caderno', 'links', 'mural', 'config'];
   const CORES = ['teal', 'azul', 'roxo', 'rosa', 'laranja', 'amarelo', 'verde', 'cinza'];
   const FASES = ['Ideia', 'Desenvolvimento', 'Lançado', 'Pausado'];
-  const S = { sb: null, uid: null, email: '', nome: '', projetos: [], membros: new Map(), docs: new Map(), carregado: false, canal: null, perfis: new Map(), saber: [], vistos: [], coment: [] };
+  const S = { sb: null, uid: null, email: '', nome: '', projetos: [], membros: new Map(), docs: new Map(), carregado: false, canal: null, prog: [], perfis: new Map(), saber: [], vistos: [], coment: [] };
   const corVar = (c) => (/^#[0-9a-f]{6}$/i.test(c || '') ? c : `var(--c-${CORES.includes(c) ? c : 'teal'})`);
   const docsDe = (pid) => { if (!S.docs.has(pid)) S.docs.set(pid, Object.fromEntries(COLS.map((c) => [c, []]))); return S.docs.get(pid); };
   const membrosDe = (pid) => S.membros.get(pid) || [];
@@ -637,6 +658,7 @@ body { overscroll-behavior-y: contain; }
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_saber' }, () => carregarSaber())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_saber_vistos' }, () => carregarSaber())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_saber_coment' }, () => carregarSaber())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_saber_prog' }, () => carregarSaber())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'neg_projetos' }, () => carregar())
       .subscribe((st) => { if (st === 'SUBSCRIBED' && S._caiu) { S._caiu = false; carregar(); } if (st === 'CHANNEL_ERROR' || st === 'TIMED_OUT' || st === 'CLOSED') S._caiu = true; });
   }
@@ -848,13 +870,14 @@ body { overscroll-behavior-y: contain; }
   const IC_LIVRO = svg('M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5zM12 6v13.5');
   const ehVideo = (u) => /youtu\.?be|vimeo\.com|tiktok\.com|instagram\.com\/(reel|p)\//i.test(u || '');
   async function carregarSaber(semRender) {
-    const [a, v, c] = await Promise.all([
-      S.sb.from('neg_saber').select('id,autor,tipo,titulo,texto,url,tema,criado_em,updated_at').order('criado_em', { ascending: false }).limit(1000),
+    const [a, v, c, pg] = await Promise.all([
+      S.sb.from('neg_saber').select('id,autor,tipo,titulo,texto,url,tema,etapas,criado_em,updated_at').order('criado_em', { ascending: false }).limit(1000),
       S.sb.from('neg_saber_vistos').select('item_id,user_id,em').limit(5000),
-      S.sb.from('neg_saber_coment').select('id,item_id,autor,texto,criado_em').order('criado_em').limit(5000)
+      S.sb.from('neg_saber_coment').select('id,item_id,autor,texto,criado_em').order('criado_em').limit(5000),
+      S.sb.from('neg_saber_prog').select('item_id,user_id,feitas').limit(5000)
     ]);
-    if (!a.error) S.saber = a.data || []; if (!v.error) S.vistos = v.data || []; if (!c.error) S.coment = c.data || [];
-    if (!semRender) { render(); const ab = $('#sb-coms'); if (ab && ab.dataset.item) pintaComents(ab.dataset.item); }
+    if (!a.error) S.saber = a.data || []; if (!v.error) S.vistos = v.data || []; if (!c.error) S.coment = c.data || []; if (pg && !pg.error) S.prog = pg.data || [];
+    if (!semRender) { render(); const ab = $('#sb-coms'); if (ab && ab.dataset.item) { pintaComents(ab.dataset.item); pintaEtapas(ab.dataset.item); } }
   }
   const nomeUser = (u) => { if (u === S.uid) return 'Você'; for (const l of S.membros.values()) { const m = l.find((x) => x.user_id === u); if (m) return m.nome; } return 'Sócio'; };
   const vistoPor = (id) => S.vistos.filter((v) => v.item_id === id).map((v) => v.user_id);
@@ -879,7 +902,8 @@ body { overscroll-behavior-y: contain; }
     const nl = el('button', 'btn soft sm'); nl.type = 'button'; nl.innerHTML = IC.link + '<span>Link</span>'; nl.addEventListener('click', () => openSaber(null, 'link'));
     const na = el('button', 'btn soft sm'); na.type = 'button'; na.innerHTML = IC_APP + '<span>App</span>'; na.addEventListener('click', () => openSaber(null, 'app'));
     const nn = el('button', 'btn sm'); nn.type = 'button'; nn.innerHTML = IC.mais + '<span>Anotação</span>'; nn.addEventListener('click', () => openSaber(null, 'nota'));
-    ac.append(na, nl, nn); h.append(ht, ac);
+    const ad = el('button', 'btn sm'); ad.type = 'button'; ad.innerHTML = IC.mais + '<span>Adicionar</span>'; ad.addEventListener('click', escolherTipo);
+    ac.append(ad); h.append(ht, ac);
     const bs = el('div', 'busca'); const q = el('input', 'field'); q.id = 'sb-q'; q.type = 'search'; q.placeholder = 'Buscar'; q.setAttribute('aria-label', 'Buscar no conhecimento'); q.addEventListener('input', () => pintaLista()); bs.appendChild(q);
     const temas = Array.from(new Set([...TEMAS, ...S.saber.map((x) => x.tema)])).filter((t) => S.saber.some((x) => x.tema === t));
     const ch = el('div', 'chips'); ch.setAttribute('role', 'group'); ch.setAttribute('aria-label', 'Filtrar por tema');
@@ -895,16 +919,83 @@ body { overscroll-behavior-y: contain; }
     if (!l.length) { lista.replaceChildren(el('p', 'vazio', sbFiltro === 'novos' ? 'Você já viu tudo.' : 'Nada encontrado.')); return; }
     lista.replaceChildren(...l.map((it) => {
       const b = el('button', 'sb-it' + (euVi(it) ? '' : ' novo')); b.type = 'button'; b.addEventListener('click', () => verSaber(it.id));
-      const ic = el('span', 'sb-ic2'); ic.innerHTML = it.tipo === 'app' ? IC_APP : it.tipo === 'link' ? (ehVideo(it.url) ? IC_VIDEO : IC.link) : IC_NOTA;
+      const ic = el('span', 'sb-ic2'); ic.innerHTML = it.tipo === 'processo' ? IC_PROC : it.tipo === 'app' ? IC_APP : it.tipo === 'link' ? (ehVideo(it.url) ? IC_VIDEO : IC.link) : IC_NOTA;
       const tx = el('span', 'sb-tx2'); tx.appendChild(el('b', '', it.titulo));
-      if (it.texto) tx.appendChild(el('p', '', it.texto));
+      if (it.tipo === 'processo') { const n = (it.etapas || []).length; const f = progDe(it.id, S.uid).filter((i) => i < n).length; tx.appendChild(el('p', '', `${n} ${n === 1 ? 'etapa' : 'etapas'}${f ? ` · você fez ${f}` : ''}${it.texto ? ' · ' + it.texto : ''}`)); } else if (it.texto) tx.appendChild(el('p', '', it.texto));
       const m = el('small'); m.append(el('span', 'pill', it.tema));
       const vis = vistoPor(it.id).filter((u) => u !== it.autor); const nc = comentsDe(it.id).length;
       m.appendChild(document.createTextNode(`${nomeUser(it.autor)} · ${dm(diaDe(it.criado_em))}${vis.length ? ' · visto por ' + vis.map(nomeUser).join(' e ') : ''}${nc ? ` · ${nc} ${nc === 1 ? 'comentário' : 'comentários'}` : ''}`));
       tx.appendChild(m); b.append(ic, tx); if (!euVi(it)) b.appendChild(el('span', 'sb-novo', 'Novo')); return b;
     }));
   }
+  const IC_PROC = svg('M5 5h3v3H5zM5 10.5h3v3H5zM5 16h3v3H5zM11 6.5h8M11 12h8M11 17.5h8');
+  function escolherTipo() {
+    const g = el('div', 'tipo-grid');
+    [['processo', IC_PROC, 'Processo', 'Passo a passo com etapas e apps'], ['nota', IC_NOTA, 'Anotação', 'Ideia, método ou aprendizado'], ['link', IC.link, 'Link', 'Vídeo, curso ou artigo'], ['app', IC_APP, 'App', 'Ferramenta que vocês usam']].forEach(([k, ic, t, d]) => {
+      const b = el('button', 'tipo-op'); b.type = 'button'; const i = el('span', 'sb-ic2'); i.innerHTML = ic; const tx = el('span', 'sb-tx2'); tx.append(el('b', '', t), el('small', '', d)); b.append(i, tx);
+      b.addEventListener('click', () => { fecharSheet(); setTimeout(() => (k === 'processo' ? openProcesso(null) : openSaber(null, k)), 220); }); g.appendChild(b); });
+    sheet('Adicionar ao Conhecimento', [g], null);
+  }
+  // ---- processo: etapas com o que fazer, app, link e tempo ----
+  const progDe = (id, u) => ((S.prog.find((x) => x.item_id === id && x.user_id === u) || {}).feitas || []);
+  function openProcesso(it) {
+    const novo = !it; it = it || { tipo: 'processo', titulo: '', texto: '', tema: 'Métodos', etapas: [] };
+    let et = (Array.isArray(it.etapas) ? it.etapas : []).map((e) => ({ ...e })); if (!et.length) et = [{ t: '', d: '', app: '', url: '', tempo: '' }];
+    const tit = field('Nome do processo', 'pr-tit', { maxlength: '160', value: it.titulo, placeholder: 'Ex.: Como eu entrego um site, do briefing à entrega' });
+    const temas = Array.from(new Set([...TEMAS, ...S.saber.map((x) => x.tema)]));
+    const tm = el('div', 'row'); const tl = el('label', '', 'Tema'); tl.htmlFor = 'pr-tema'; const ts = el('select', 'field'); ts.id = 'pr-tema'; temas.forEach((t) => ts.appendChild(new Option(t, t))); ts.value = temas.includes(it.tema) ? it.tema : 'Métodos'; tm.append(tl, ts);
+    const ds = field('Para que serve (opcional)', 'pr-tx', { tag: 'textarea', rows: '2', maxlength: '2000', value: it.texto || '', placeholder: 'Ex.: o caminho que eu sigo em todo site, para o seu sócio conseguir fazer igual.' });
+    const dl = el('datalist'); dl.id = 'pr-apps'; S.saber.filter((x) => x.tipo === 'app').forEach((x) => dl.appendChild(new Option(x.titulo)));
+    const box = el('div', 'pr-etapas'); const lbl = el('p', 'lbl', 'Etapas');
+    const le = () => { $$('.pr-et', box).forEach((c, i) => { et[i] = { t: $('.pe-t', c).value.trim(), d: $('.pe-d', c).value.trim(), app: $('.pe-app', c).value.trim(), url: $('.pe-url', c).value.trim(), tempo: $('.pe-tm', c).value.trim() }; }); };
+    const pinta = () => { box.replaceChildren(...et.map((e, i) => {
+      const c = el('div', 'pr-et'); const top = el('div', 'pr-et-h'); top.appendChild(el('span', 'st-n', String(i + 1)));
+      const t = el('input', 'field pe-t'); t.value = e.t || ''; t.placeholder = 'O que fazer (ex.: Briefing com o cliente)'; t.maxLength = 120; t.setAttribute('aria-label', `Etapa ${i + 1}`); top.appendChild(t);
+      const mv = (dlt) => { le(); const j = i + dlt; if (j < 0 || j >= et.length) return; [et[i], et[j]] = [et[j], et[i]]; pinta(); };
+      const up = el('button', 'ic-btn'); up.type = 'button'; up.innerHTML = svg('M12 18V6M6.5 11.5 12 6l5.5 5.5', 2); up.setAttribute('aria-label', 'Subir etapa'); up.disabled = i === 0; up.addEventListener('click', () => mv(-1));
+      const rm = el('button', 'ic-btn'); rm.type = 'button'; rm.innerHTML = svg('M6 6l12 12M18 6 6 18', 2); rm.setAttribute('aria-label', 'Tirar etapa'); rm.addEventListener('click', () => { le(); et.splice(i, 1); if (!et.length) et.push({ t: '', d: '', app: '', url: '', tempo: '' }); pinta(); });
+      top.append(up, rm);
+      const d = el('textarea', 'field pe-d'); d.rows = 2; d.maxLength = 1500; d.value = e.d || ''; d.placeholder = 'Como fazer, dicas e cuidados'; d.setAttribute('aria-label', `Detalhes da etapa ${i + 1}`);
+      const linha = el('div', 'row2'); const a = el('input', 'field pe-app'); a.value = e.app || ''; a.placeholder = 'App usado (ex.: Figma)'; a.maxLength = 60; a.setAttribute('list', 'pr-apps'); a.setAttribute('aria-label', 'App usado');
+      const tm2 = el('input', 'field pe-tm'); tm2.value = e.tempo || ''; tm2.placeholder = 'Tempo (ex.: 1 dia)'; tm2.maxLength = 30; tm2.setAttribute('aria-label', 'Tempo'); linha.append(a, tm2);
+      const u = el('input', 'field pe-url'); u.type = 'url'; u.inputMode = 'url'; u.value = e.url || ''; u.placeholder = 'Link de apoio (opcional)'; u.maxLength = 600; u.setAttribute('aria-label', 'Link de apoio');
+      c.append(top, d, linha, u); return c; })); };
+    pinta();
+    const add = el('button', 'btn soft sm', '+ Adicionar etapa'); add.type = 'button'; add.addEventListener('click', () => { le(); et.push({ t: '', d: '', app: '', url: '', tempo: '' }); pinta(); const ult = $$('.pe-t', box).pop(); if (ult) ult.focus(); });
+    let extra = null; if (!novo) { extra = el('button', 'btn danger', 'Apagar processo'); extra.type = 'button'; extra.addEventListener('click', () => confirmar(extra, async () => { const { error } = await S.sb.from('neg_saber').delete().eq('id', it.id); if (error) { toast('Não consegui apagar'); return; } fecharSheet(); carregarSaber(); })); }
+    sheet(novo ? 'Novo processo' : 'Editar processo', [tit, tm, ds, lbl, box, add, dl], async () => {
+      le(); const ti = $('#pr-tit').value.trim(); if (!ti) { toast('Dê um nome ao processo'); $('#pr-tit').focus(); return false; }
+      const lista = et.filter((e) => e.t).slice(0, 60).map((e) => { let u = e.url; if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u; return { t: e.t, d: e.d, app: e.app, url: u && urlOk(u) ? u : '', tempo: e.tempo }; });
+      if (!lista.length) { toast('Escreva pelo menos uma etapa'); return false; }
+      const dados = { tipo: 'processo', titulo: ti, texto: $('#pr-tx').value.slice(0, 2000), url: null, tema: $('#pr-tema').value, etapas: lista };
+      const { error } = novo ? await S.sb.from('neg_saber').insert(dados) : await S.sb.from('neg_saber').update(dados).eq('id', it.id);
+      if (error) { toast('Não salvou. Confira a internet.'); return false; }
+      toast(novo ? 'Processo salvo. Seu sócio já consegue ver.' : 'Salvo'); carregarSaber(); return true;
+    }, extra);
+  }
+  function pintaEtapas(id) {
+    const box = $('#pr-ver'); const it = S.saber.find((x) => x.id === id); if (!box || !it || it.tipo !== 'processo') return;
+    const et = Array.isArray(it.etapas) ? it.etapas : []; const meu = progDe(id, S.uid);
+    const pessoas = [S.uid]; for (const l of S.membros.values()) l.forEach((m) => { if (!pessoas.includes(m.user_id)) pessoas.push(m.user_id); });
+    const pr = el('div', 'pr-prog'); pessoas.forEach((u) => { const n = progDe(id, u).filter((i) => i < et.length).length; if (u !== S.uid && !n) return; const c = el('div'); c.append(el('span', '', `${nomeUser(u)}: ${n} de ${et.length}`), (() => { const b = el('div', 'barra'); const i = el('i'); i.style.width = (et.length ? n / et.length * 100 : 0) + '%'; if (n === et.length && n) i.className = 'cheio'; b.appendChild(i); return b; })()); pr.appendChild(c); });
+    const ol = el('ol', 'pr-lista');
+    et.forEach((e, i) => {
+      const li = el('li', 'pr-v' + (meu.includes(i) ? ' feito' : ''));
+      const ck = el('button', 'ck'); ck.type = 'button'; ck.setAttribute('aria-pressed', String(meu.includes(i))); ck.setAttribute('aria-label', `Etapa ${i + 1}: ${meu.includes(i) ? 'feita' : 'marcar como feita'}`);
+      ck.addEventListener('click', async () => { const at = progDe(id, S.uid).slice(); const k = at.indexOf(i); if (k >= 0) at.splice(k, 1); else at.push(i); const reg = S.prog.find((x) => x.item_id === id && x.user_id === S.uid); if (reg) reg.feitas = at; else S.prog.push({ item_id: id, user_id: S.uid, feitas: at }); pintaEtapas(id); const { error } = await S.sb.from('neg_saber_prog').upsert({ item_id: id, user_id: S.uid, feitas: at, em: new Date().toISOString() }, { onConflict: 'item_id,user_id' }); if (error) toast('Não salvou o progresso'); });
+      const tx = el('div', 'pr-v-tx'); const h = el('b', ''); h.append(el('span', 'pr-n', `${i + 1}. `), document.createTextNode(e.t)); tx.appendChild(h);
+      if (e.d) tx.appendChild(el('p', '', e.d));
+      const meta = el('div', 'pr-meta');
+      if (e.app) { const appIt = S.saber.find((x) => x.tipo === 'app' && x.titulo.toLowerCase() === e.app.toLowerCase()); const ch = el('button', 'pill acc pr-app'); ch.type = 'button'; ch.innerHTML = IC_APP; ch.appendChild(document.createTextNode(e.app)); if (appIt) ch.addEventListener('click', () => { fecharSheet(); setTimeout(() => verSaber(appIt.id), 220); }); else { ch.disabled = true; ch.title = 'Salve esse app no Conhecimento para abrir a explicação'; } meta.appendChild(ch); }
+      if (e.tempo) meta.appendChild(el('span', 'pill', e.tempo));
+      if (e.url && urlOk(e.url)) { const a = el('a', 'link'); a.href = e.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'Abrir link'; meta.appendChild(a); }
+      if (meta.childElementCount) tx.appendChild(meta);
+      li.append(ck, tx); ol.appendChild(li);
+    });
+    box.replaceChildren(pr, ol);
+  }
   function openSaber(it, tipo) {
+    if ((it && it.tipo === 'processo') || tipo === 'processo') { openProcesso(it || null); return; }
     const novo = !it; it = it || { tipo, titulo: '', texto: '', url: '', tema: tipo === 'app' ? 'Apps' : sbTema !== 'Todos' ? sbTema : tipo === 'nota' ? 'Métodos' : 'Tráfego pago' };
     const tp = segField('Tipo', 'sb-tipo', [['nota', 'Anotação'], ['link', 'Link'], ['app', 'App']], it.tipo);
     const url = field('Link', 'sb-url', { type: 'url', inputmode: 'url', maxlength: '600', value: it.url || '', placeholder: 'https://youtube.com/…' });
@@ -938,11 +1029,12 @@ body { overscroll-behavior-y: contain; }
     const meta = el('div', 'ph-m'); meta.append(el('span', 'pill acc', it.tema), el('span', '', `${nomeUser(it.autor)} · ${dm(diaDe(it.criado_em))}`)); corpo.push(meta);
     if ((it.tipo === 'link' || it.tipo === 'app') && urlOk(it.url)) { const a = el('a', 'btn'); a.href = it.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.innerHTML = (it.tipo === 'app' ? IC_APP : ehVideo(it.url) ? IC_VIDEO : IC.link) + `<span>Abrir ${it.tipo === 'app' ? 'app' : ehVideo(it.url) ? 'vídeo' : 'link'} · ${new URL(it.url).hostname.replace(/^www\./, '')}</span>`; corpo.push(a); }
     if (it.texto) corpo.push(el('p', 'sb-corpo', it.texto));
+    if (it.tipo === 'processo') { const pv = el('div'); pv.id = 'pr-ver'; corpo.push(pv); }
     const vis = vistoPor(id).filter((u) => u !== it.autor);
     corpo.push(el('p', 'sub', vis.length ? `Visto por ${vis.map(nomeUser).join(' e ')}` : 'Ninguém mais viu ainda'));
     const acoes = el('div', 'acoes');
-    const cl = el('button', 'btn claude sm'); cl.type = 'button'; cl.innerHTML = IC.claude + '<span>Resumir com o Claude</span>';
-    cl.addEventListener('click', () => pedirAoClaude(`${it.tipo === 'app' ? `Este é um app que eu e meu sócio usamos ou queremos testar: ${it.titulo}${it.url ? ' (' + it.url + ')' : ''}. Diga para que ele serve num negócio digital, os melhores usos e alternativas.` : it.tipo === 'link' ? `Este é um conteúdo que eu e meu sócio salvamos: ${it.url}` : 'Esta é uma anotação que eu e meu sócio fizemos.'}\nTítulo: ${it.titulo}\nTema: ${it.tema}\n${it.texto ? 'Nossas notas:\n' + it.texto + '\n' : ''}\nResuma os pontos principais em tópicos curtos e transforme em um passo a passo prático para aplicarmos no nosso negócio digital. Responda em português do Brasil.`));
+    const cl = el('button', 'btn claude sm'); cl.type = 'button'; cl.innerHTML = IC.claude + `<span>${it.tipo === 'processo' ? 'Revisar com o Claude' : 'Resumir com o Claude'}</span>`;
+    cl.addEventListener('click', () => pedirAoClaude(it.tipo === 'processo' ? `Este é o processo que eu uso no meu negócio digital e quero ensinar ao meu sócio: "${it.titulo}".${it.texto ? ' Para que serve: ' + it.texto : ''}\nEtapas:\n${(it.etapas || []).map((e, i) => `${i + 1}. ${e.t}${e.app ? ' (app: ' + e.app + ')' : ''}${e.tempo ? ' [' + e.tempo + ']' : ''}${e.d ? ' - ' + e.d : ''}`).join('\n')}\n\nRevise esse processo: aponte etapas que faltam, onde dá para ganhar tempo ou automatizar, apps melhores ou mais baratos e um checklist final de entrega. Responda em português do Brasil, em tópicos curtos.` : `${it.tipo === 'app' ? `Este é um app que eu e meu sócio usamos ou queremos testar: ${it.titulo}${it.url ? ' (' + it.url + ')' : ''}. Diga para que ele serve num negócio digital, os melhores usos e alternativas.` : it.tipo === 'link' ? `Este é um conteúdo que eu e meu sócio salvamos: ${it.url}` : 'Esta é uma anotação que eu e meu sócio fizemos.'}\nTítulo: ${it.titulo}\nTema: ${it.tema}\n${it.texto ? 'Nossas notas:\n' + it.texto + '\n' : ''}\nResuma os pontos principais em tópicos curtos e transforme em um passo a passo prático para aplicarmos no nosso negócio digital. Responda em português do Brasil.`));
     acoes.appendChild(cl);
     if (it.autor === S.uid) { const ed = el('button', 'btn soft sm', 'Editar'); ed.type = 'button'; ed.addEventListener('click', () => openSaber(it)); acoes.appendChild(ed); }
     else { const nv = el('button', 'btn soft sm', 'Marcar como não visto'); nv.type = 'button'; nv.addEventListener('click', async () => { S.vistos = S.vistos.filter((v) => !(v.item_id === id && v.user_id === S.uid)); await S.sb.from('neg_saber_vistos').delete().match({ item_id: id, user_id: S.uid }); fecharSheet(); render(); }); acoes.appendChild(nv); }
@@ -952,7 +1044,7 @@ body { overscroll-behavior-y: contain; }
     const env = el('button', 'btn', 'Enviar'); env.type = 'button';
     env.addEventListener('click', async () => { const t = ta.value.trim(); if (!t) return; env.disabled = true; const { error } = await S.sb.from('neg_saber_coment').insert({ item_id: id, texto: t }); env.disabled = false; if (error) { toast('Não enviou'); return; } ta.value = ''; carregarSaber(); });
     f.append(ta, env); corpo.push(f);
-    sheet(it.titulo, corpo, null); pintaComents(id);
+    sheet(it.titulo, corpo, null); pintaComents(id); pintaEtapas(id);
   }
   function pintaComents(id) {
     const cw = $('#sb-coms'); if (!cw) return; const l = comentsDe(id);
