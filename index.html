@@ -185,6 +185,16 @@ h3 { margin: 0; font-size: 16px; font-weight: 650; }
 .tf-tx { appearance: none; border: 0; background: none; padding: 0; text-align: left; flex: 1; min-width: 0; color: inherit; font: inherit; cursor: pointer; display: grid; gap: 5px; }
 .tf-tx b { font-weight: 600; overflow-wrap: anywhere; }
 .tf.feito .tf-tx b { color: var(--fg-3); text-decoration: line-through; font-weight: 500; }
+.tf-w { display: grid; }
+.tf-w > .tf { padding-bottom: 8px; }
+.tf-lista { display: grid; gap: 2px; padding: 0 14px 12px 50px; }
+.tf-li { display: flex; align-items: center; gap: 9px; min-height: 30px; font-size: 14px; overflow-wrap: anywhere; }
+.tf-li span { flex: 1; min-width: 0; }
+.tf-li.feito span { color: var(--fg-3); text-decoration: line-through; }
+.ck.sm { width: 20px; height: 20px; margin-top: 0; border-width: 1.8px; }
+.ck.sm[aria-pressed="true"]::after { width: 7px; height: 4px; border-width: 2px; }
+.tf-mais { appearance: none; border: 0; background: none; padding: 4px 0; text-align: left; color: var(--accent); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.tf.feito + .tf-lista { opacity: .7; }
 .cl-box { display: grid; gap: 6px; }
 .cl-it { display: flex; align-items: center; gap: 8px; }
 .cl-it .ck { margin-top: 0; }
@@ -1264,7 +1274,18 @@ body { overscroll-behavior-y: contain; }
     if (t.status === 'feito') { if (t.feito_por) m.appendChild(el('span', '', 'feita por ' + (t.feito_por === S.uid ? 'você' : nomeDe(p.id, t.feito_por)))); }
     else if (t.prazo) { const n = diasEntre(HOJE(), t.prazo); m.appendChild(el('span', n < 0 ? 'atr' : '', n < 0 ? `atrasada · ${dm(t.prazo)}` : n === 0 ? 'hoje' : n === 1 ? 'amanhã' : `até ${dm(t.prazo)}`)); }
     if (m.childElementCount) tx.appendChild(m);
-    r.append(ck, tx); return r;
+    r.append(ck, tx);
+    if (compacta || !Array.isArray(t.lista) || !t.lista.length) return r;
+    // checklist logo abaixo do título; marcar salva na hora, sem abrir a tarefa
+    const w = el('div', 'tf-w'); const bx = el('div', 'tf-lista');
+    const MAX = 8; const ordem = t.lista.map((x, i) => [x, i]);
+    ordem.slice(0, MAX).forEach(([it, i]) => {
+      const li = el('div', 'tf-li' + (it.feito ? ' feito' : '')); const c = el('button', 'ck sm'); c.type = 'button'; c.setAttribute('aria-pressed', String(!!it.feito)); c.setAttribute('aria-label', (it.feito ? 'Desmarcar: ' : 'Marcar: ') + it.t);
+      c.addEventListener('click', () => { const nova = t.lista.map((x, j) => (j === i ? { ...x, feito: !x.feito } : x)); salvar(p.id, 'tarefas', t.id, { ...limpo(t), lista: nova }, false); });
+      li.append(c, el('span', '', it.t)); bx.appendChild(li);
+    });
+    if (ordem.length > MAX) { const mais = el('button', 'tf-mais', `Ver mais ${ordem.length - MAX} ${ordem.length - MAX === 1 ? 'item' : 'itens'}`); mais.type = 'button'; mais.addEventListener('click', () => openTarefa(p.id, t)); bx.appendChild(mais); }
+    w.append(r, bx); return w;
   }
   function openTarefa(pid, t) {
     const novo = !t; t = t || { titulo: '', status: 'afazer', resp: S.uid, prazo: '', notas: '' };
@@ -1279,7 +1300,7 @@ body { overscroll-behavior-y: contain; }
     const salvaLista = () => { if (novo) return; const atual = docsDe(pid).tarefas.find((x) => x.id === t.id) || t; salvar(pid, 'tarefas', t.id, { ...limpo(atual), lista: lista.filter((x) => x.t.trim()) }, false); };
     const clRow = el('div', 'row'); const clItens = el('div', 'cl-box'); const clProg = el('p', 'cl-prog');
     const clPinta = () => {
-      clProg.textContent = lista.length ? `${lista.filter((x) => x.feito).length} de ${lista.length} feitos` : 'Nada na lista ainda. Cole um item por linha, por exemplo um lead por linha.';
+      clProg.textContent = lista.length ? `${lista.filter((x) => x.feito).length} de ${lista.length} feitos` : 'Nada na lista ainda. Cole um por linha, por exemplo os clientes do follow up.';
       clItens.replaceChildren(...lista.map((it, i) => {
         const r = el('div', 'cl-it' + (it.feito ? ' feito' : ''));
         const ck = el('button', 'ck'); ck.type = 'button'; ck.setAttribute('aria-pressed', String(it.feito)); ck.setAttribute('aria-label', (it.feito ? 'Desmarcar: ' : 'Marcar: ') + it.t);
@@ -1299,9 +1320,9 @@ body { overscroll-behavior-y: contain; }
       novos.forEach((x) => lista.push({ id: novoId(), t: x.slice(0, 160), feito: false })); clNovo.value = ''; clPinta(); salvaLista();
     });
     const clAddBox = el('div', 'cl-add'); clAddBox.append(clNovo, clAdd);
-    clRow.append(el('span', 'lbl', 'Lista de verificação (opcional)'), clProg, clItens, clAddBox); clPinta();
+    clRow.append(el('span', 'lbl', 'Lista de verificação (clientes, passos...)'), clProg, clItens, clAddBox); clPinta();
     let extra = null; if (!novo) { extra = el('button', 'btn danger', 'Apagar tarefa'); extra.type = 'button'; extra.addEventListener('click', () => confirmar(extra, () => { fecharSheet(); apagar(pid, 'tarefas', t.id); })); }
-    sheet(novo ? 'Nova tarefa' : 'Tarefa', [tit, st, rs, pz, nt, clRow], () => {
+    sheet(novo ? 'Nova tarefa' : 'Tarefa', [tit, clRow, st, rs, pz, nt], () => {
       const ti = $('#tf-tit').value.trim(); if (!ti) { toast('Escreva a tarefa'); $('#tf-tit').focus(); return false; }
       const status = $('#tf-st').dataset.value || 'afazer'; const eraFeito = t.status === 'feito';
       const pend = clNovo.value.trim(); if (pend) { pend.split('\n').map((l) => l.replace(/^[\s\-•*☐□\[\]]+/, '').trim()).filter(Boolean).forEach((x) => { if (lista.length < 100) lista.push({ id: novoId(), t: x.slice(0, 160), feito: false }); }); clNovo.value = ''; }
